@@ -1,0 +1,70 @@
+body {
+    background-image: url('../assets/AuthBG.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    height: 100vh;
+    font-family: 'Quicksand', sans-serif;
+}
+
+.header_styles {
+    background-color:rgb(0, 0, 0);
+    height: 50px;
+    color: white
+}
+
+.signup_form {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.542);
+    z-index: 5;
+}
+
+.signup_form_Sub {
+    width: 40vw;
+    background-color: white;
+    padding: 30px;
+    margin: 10px;
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+}
+.center {
+    border: 5px solid;
+    text-align: center;
+}
+
+/* Product Selling page styles */
+
+.productSellingMain {
+    width: 50vw;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.829);
+    margin: 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    font-weight: 600;
+}
+
+.image-container {
+    width: 300px;
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.forgotSuccess {
+    background-color: rgba(0,255,0,0.3);
+    color: Black;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 5px
+}

@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import Home from './Home.js';
+import Signup from './Components/Auth/SignUp.js'
+import Login from './Components/Auth/Login.js'
+import ForgotPassword from "./Components/Auth/ForgotPassword.js";
+import { useSelector } from "react-redux";
+import ForgotUsername from './Components/Auth/ForgotUsername.js';
 
 function App() {
+
+  const openLoginTab = useSelector(state => state.mainSlice.showLoginTab)
+  const showRegistrationTab = useSelector(state => state.mainSlice.showRegisterTab)
+  const showForgotPasswordTab = useSelector(state => state.mainSlice.showForgotPasswordTab)
+  const showForgotUsernameModal = useSelector(state => state.mainSlice.showForgotUsernameTab)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {showForgotUsernameModal && <ForgotUsername />}
+      {openLoginTab && <Login />}
+      {showRegistrationTab && <Signup />}
+      {showForgotPasswordTab && <ForgotPassword />}
+      <Home />
     </div>
-  );
+  )
 }
 
 export default App;
