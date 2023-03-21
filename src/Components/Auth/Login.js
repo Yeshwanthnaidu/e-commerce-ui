@@ -18,7 +18,7 @@ function SignIn() {
     }
 
     useEffect(() => {
-        /* global google */
+        /* global google*/
         google.accounts.id.initialize({
             client_id: '904622826862-dpd51rk6vaqghctaghfqhh6l9ndevd8t.apps.googleusercontent.com',
             callback: handleCallbackResponse

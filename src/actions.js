@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { mainSliceActions } from "./Store/MainSlice"
 
-const proxy = 'http://172.16.10.169:8000' // REACT_APP_PROXY
+const proxy = process.env.REACT_APP_PROXY
 
 export const signupSubmit = async (userData, dispatch) => {
     const formData = new FormData();

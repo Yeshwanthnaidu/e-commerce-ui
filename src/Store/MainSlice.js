@@ -47,6 +47,7 @@ const mainSlice = createSlice({
     },
     logoutUser(state, action) {
       localStorage.removeItem('token')
+      state.showSellingModal = false
       state.userData = {};
       state.loginStatus = false
     },

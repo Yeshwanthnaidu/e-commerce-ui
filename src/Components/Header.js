@@ -16,14 +16,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { mainSliceActions } from "./../Store/MainSlice.js"
 import { toast } from 'react-toastify';
 
-function Header() {
+function Header () {
     const dispatch = useDispatch();
 
     const loginStatus = useSelector(state => state.mainSlice.loginStatus)
     const userData = useSelector(state => state.mainSlice.userData)
 
     const loginBtnClicked = () => {
-        dispatch(mainSliceActions.showLogin(true))
+        window.location.href='/login'
+        // dispatch(mainSliceActions.showLogin(true))
     }
 
     const registerBtnClicked = () => {
@@ -75,7 +76,8 @@ function Header() {
                         style={{ maxHeight: '100px' }}
                         navbarScroll
                     >
-                        {!loginStatus ? <><Button variant="outline-none" onClick={loginBtnClicked} style={{ color: 'white', fontWeight: '600' }}>Login</Button>
+                        {!loginStatus ? <>
+                                <Nav.Link variant="outline-none" onClick={loginBtnClicked} style={{ color: 'white', fontWeight: '600' }}>Login</Nav.Link>
                             <Button variant="outline-none" onClick={registerBtnClicked} style={{ color: 'white', fontWeight: '600' }}>Register</Button></> :
                             <><Button variant="outline-none" onClick={() => { dispatch(mainSliceActions.logoutUser()); toast.success('Logout Successful') }} style={{ border: '1px solid #ccc', color: 'white', fontWeight: '600' }}> <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" style={{ color: 'red', marginRight: '5px' }} />Logout</Button>
                             </>}
