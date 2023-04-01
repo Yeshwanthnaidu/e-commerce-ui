@@ -3,14 +3,13 @@ import { Modal, Button } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { mainSliceActions } from "../../../Store/MainSlice";
+import { createProduct } from '../../../actions'
 
 function ConfirmationModal(props) {
   const dispatch = useDispatch();
 
   const PublishAd = () => {
-    toast.success("Published Successfully");
-    props.setShowConfirmationModal(false);
-    dispatch(mainSliceActions.showsellingModal(false));
+    createProduct(props);
   };
 
   return (
@@ -43,11 +42,16 @@ function ConfirmationModal(props) {
             <div> {props.props.discount}</div>
             <div>Image:</div>
             <div>
-              <img
-                src={props.props.images[0]}
-                alt="Product Image"
-                width="250"
-              />
+              {props.props.images.map((image, i) => {
+                return <>
+                  <img
+                    key={i}
+                    src={image}
+                    alt="Product Image"
+                    width="250"
+                  />
+                </>
+              })}
             </div>
           </div>
         </Modal.Body>

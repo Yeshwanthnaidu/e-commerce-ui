@@ -15,8 +15,8 @@ function SignIn() {
 
   // google Auth
   const handleCallbackResponse = (response) => {
-    const decoded = jwt_decode(response.credential);
-    oAuthVerification(decoded.email, navigate, dispatch);
+    // const decoded = jwt_decode(response.credential);
+    oAuthVerification(response.credential, navigate, dispatch);
   };
 
   useEffect(() => {

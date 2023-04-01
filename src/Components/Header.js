@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-
 library.add(fas);
 
 import { useDispatch, useSelector } from "react-redux";
@@ -89,7 +88,8 @@ function Header() {
                 marginLeft: "-80px",
               }}
               onClick={() => {
-                dispatch(mainSliceActions.showsellingModal(true));
+                // dispatch(mainSliceActions.showsellingModal(true));
+                navigate('/sell_your_product', {replace: true})
               }}
               variant="outline-success"
             >

@@ -1,8 +1,20 @@
 import { toast } from "react-toastify";
 import { mainSliceActions } from "./Store/MainSlice";
 
-const proxy = process.env.REACT_APP_PROXY;
+const proxy = process.env.REACT_APP_PROXY_HOME;
 
+// TOken Verification
+const parseJwt = (token) => {
+  try {
+    return JSON.parse(atob(token.split('.')[1]));
+  } catch (e) {
+    return null;
+  }
+};
+
+// User Actions
+
+// SignUp
 export const signupSubmit = async (userData, navigate) => {
   const formData = new FormData();
   formData.append("name", userData.name);
@@ -36,6 +48,7 @@ export const signupSubmit = async (userData, navigate) => {
   }
 };
 
+// Login
 export const loginSubmit = async (loginData, navigate, dispatch) => {
   const formData = new FormData();
   formData.append("username", loginData.username);
@@ -66,6 +79,7 @@ export const loginSubmit = async (loginData, navigate, dispatch) => {
   }
 };
 
+//Forgot Password
 export const forgotPasswordSubmit = async (username) => {
   try {
     const formData = new FormData();
@@ -90,10 +104,11 @@ export const forgotPasswordSubmit = async (username) => {
   }
 };
 
-export const oAuthVerification = async (email, navigate, dispatch) => {
+// Oauth Verification
+export const oAuthVerification = async (G_Key, navigate, dispatch) => {
   try {
     const formData = new FormData();
-    formData.append("email", email.toLowerCase());
+    formData.append("gkey", G_Key);
     const response = await fetch(`${proxy}/user-verification`, {
       method: "POST",
       body: formData,
@@ -118,6 +133,7 @@ export const oAuthVerification = async (email, navigate, dispatch) => {
   }
 };
 
+//Forgot Username
 export const forgotUsernameSubmit = async (email) => {
   try {
     const formData = new FormData();
@@ -141,3 +157,46 @@ export const forgotUsernameSubmit = async (email) => {
     console.error("Error:", error);
   }
 };
+
+// Product Functions
+
+export const createProduct = async (productData) => {
+  try {
+    const productInfo = productData.props
+    
+    const formData = new FormData();
+    formData.append('productName', productInfo.productName)
+    formData.append('description', productInfo.description)
+    formData.append('discount', productInfo.discount)
+    formData.append('images', productInfo.images)
+    formData.append('manufacturer', productInfo.manufacturer)
+    formData.append('price', productInfo.price)
+    formData.append('productType', productInfo.productType)
+    formData.append('techSpecs', JSON.stringify(productInfo.techSpecs))
+    formData.append('typeNR', productInfo.typeNR)
+
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      const response = await fetch(`${proxy}/create_product`, {
+        method: 'POST',
+        headers: { 'authorization': `token ${token}` },
+        body: formData
+      })
+
+      let resResult;
+      await response.json().then((result) => (resResult = result));
+
+      if (!response.ok) {
+        throw resResult.message;
+      } else {
+        console.log("Published on server ==>", resResult)
+      }
+    } else {
+      throw 'Session Timed Out!!'
+    }
+  } catch (error) {
+    toast.error("Unable to Publish" + error);
+    console.error("Error:", error);
+  }
+}

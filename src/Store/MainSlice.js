@@ -18,7 +18,6 @@ const mainSlice = createSlice({
   initialState: {
     loginStatus: !!tokenVerification() ? true : false,
     userData: !!tokenVerification() ? tokenVerification() : {},
-    showSellingModal: false,
   },
   reducers: {
     loggedUserData(state, action) {
@@ -30,9 +29,6 @@ const mainSlice = createSlice({
       state.showSellingModal = false;
       state.userData = {};
       state.loginStatus = false;
-    },
-    showsellingModal(state, action) {
-      state.showSellingModal = action.payload;
     },
   },
 });
