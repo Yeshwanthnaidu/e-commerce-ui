@@ -76,7 +76,7 @@ const ProductSellingPage = () => {
     const selectedImages = Array.from(e.target.files);
     if (selectedImages.length > 2)
       return toast.error("Please Select 2 files only");
-    setImages(selectedImages.map((image) => URL.createObjectURL(image)));
+    setImages(selectedImages)
   };
 
   const handleRemoveImage = (index) => {
@@ -221,7 +221,7 @@ const ProductSellingPage = () => {
                   <div key={index} className="image-container">
                     <div>
                       <img
-                        src={image}
+                        src={URL.createObjectURL(image)}
                         alt="preview"
                         style={{
                           maxWidth: "200px",

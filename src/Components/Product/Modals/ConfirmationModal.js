@@ -43,14 +43,13 @@ function ConfirmationModal(props) {
             <div>Image:</div>
             <div>
               {props.props.images.map((image, i) => {
-                return <>
+                return <div key={i}>
                   <img
-                    key={i}
-                    src={image}
+                    src={URL.createObjectURL(image)}
                     alt="Product Image"
                     width="250"
                   />
-                </>
+                </div>
               })}
             </div>
           </div>

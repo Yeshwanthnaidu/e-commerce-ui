@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { mainSliceActions } from "./Store/MainSlice";
 
-const proxy = process.env.REACT_APP_PROXY_HOME;
+const proxy = process.env.REACT_APP_PROXY_PC;
 
 // TOken Verification
 const parseJwt = (token) => {
@@ -163,12 +163,12 @@ export const forgotUsernameSubmit = async (email) => {
 export const createProduct = async (productData) => {
   try {
     const productInfo = productData.props
-    
+
     const formData = new FormData();
     formData.append('productName', productInfo.productName)
     formData.append('description', productInfo.description)
     formData.append('discount', productInfo.discount)
-    formData.append('images', productInfo.images)
+    productInfo.images.map(image => formData.append('images', image))
     formData.append('manufacturer', productInfo.manufacturer)
     formData.append('price', productInfo.price)
     formData.append('productType', productInfo.productType)
