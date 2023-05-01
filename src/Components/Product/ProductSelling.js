@@ -22,6 +22,7 @@ const ProductSellingPage = () => {
   const [manufacturer, setManudacturer] = useState("");
   const [images, setImages] = useState([]);
   const [techSpecs, settechSpecs] = useState([{ key: "", value: "" }]);
+  const [stock, setStock] = useState();
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   // function to handle adding a new key-value pair
@@ -95,7 +96,8 @@ const ProductSellingPage = () => {
       !productType ||
       !manufacturer ||
       !images ||
-      !techSpecs
+      !techSpecs ||
+      !stock
     ) {
       return toast.error("Please Provide all the Details");
     }
@@ -259,6 +261,19 @@ const ProductSellingPage = () => {
             </div>
           </div>
           <div className="d-flex" style={{ gap: "30px" }}>
+          <InputGroup className="mb-3">
+              <InputGroup.Text id="inputGroup-sizing-default">
+                Inventory Stock
+              </InputGroup.Text>
+              <Form.Control
+                aria-label="Default"
+                type="Number"
+                onChange={(e) => {
+                  setStock(e.target.value);
+                }}
+                aria-describedby="inputGroup-sizing-default"
+              />
+            </InputGroup>
             <InputGroup className="mb-3">
               <InputGroup.Text id="inputGroup-sizing-default">
                 Price (Rs)
@@ -315,7 +330,8 @@ const ProductSellingPage = () => {
               productType,
               manufacturer,
               images,
-              techSpecs
+              techSpecs,
+              stock
             }}
             setShowConfirmationModal={setShowConfirmationModal}
           />

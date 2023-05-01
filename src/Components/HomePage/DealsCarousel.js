@@ -13,6 +13,7 @@ const DealsCarousel = () => {
                         className="d-block w-100"
                         src={deals1}
                         alt="First slide"
+                        style={{maxHeight: "250px"}}
                     />
                     {/* <Carousel.Caption>
                         <h3>First slide label</h3>
@@ -24,6 +25,7 @@ const DealsCarousel = () => {
                         className="d-block w-100"
                         src={deals2}
                         alt="Second slide"
+                        style={{maxHeight: "250px"}}
                     />
                 </Carousel.Item>
                 <Carousel.Item>
@@ -31,6 +33,7 @@ const DealsCarousel = () => {
                         className="d-block w-100"
                         src={deals3}
                         alt="Third slide"
+                        style={{maxHeight: "250px"}}
                     />
                 </Carousel.Item>
             </Carousel>

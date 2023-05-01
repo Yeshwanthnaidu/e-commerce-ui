@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { mainSliceActions } from "./Store/MainSlice";
 
-const proxy = process.env.REACT_APP_PROXY_PC;
+const proxy = process.env.REACT_APP_PROXY_OFFICE;
 
 // TOken Verification
 const parseJwt = (token) => {
@@ -12,7 +12,7 @@ const parseJwt = (token) => {
   }
 };
 
-// User Actions
+// -----------------User Actions-------------------
 
 // SignUp
 export const signupSubmit = async (userData, navigate) => {
@@ -158,9 +158,40 @@ export const forgotUsernameSubmit = async (email) => {
   }
 };
 
+// change Password
+export const changePassword = async (data) => {
+  try {
+    const formData = new FormData();
+    formData.append('currentPassword', data.currentPassword)
+    formData.append('newPassword', data.newPassword)
+
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${proxy}/change-password`, {
+      method: "PUT",
+      headers: { 'authorization': `token ${token}` },
+      body: formData,
+    });
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      toast.success('Password Changed Successfully')
+      return resResult;
+    }
+  } catch (error) {
+    toast.error(error);
+    console.error("Error:", error);
+  }
+}
+
+
 // Product Functions
 
-export const createProduct = async (productData) => {
+// Create Product
+export const createProduct = async (productData, setShowConfirmationModal, navigate, userData) => {
   try {
     const productInfo = productData.props
 
@@ -173,7 +204,10 @@ export const createProduct = async (productData) => {
     formData.append('price', productInfo.price)
     formData.append('productType', productInfo.productType)
     formData.append('techSpecs', JSON.stringify(productInfo.techSpecs))
-    formData.append('typeNR', productInfo.typeNR)
+    formData.append('typeNewRefurbished', productInfo.typeNR)
+    formData.append('Stock', productInfo.stock)
+    formData.append('Soldby', userData.username)
+    formData.append('SellerContact', userData.email)
 
     const token = localStorage.getItem('token');
 
@@ -190,13 +224,63 @@ export const createProduct = async (productData) => {
       if (!response.ok) {
         throw resResult.message;
       } else {
-        console.log("Published on server ==>", resResult)
+        setShowConfirmationModal(false)
+        toast.success('Product Published Successfully')
+        navigate('/', { replace: true })
       }
     } else {
       throw 'Session Timed Out!!'
     }
   } catch (error) {
     toast.error("Unable to Publish" + error);
+    console.error("Error:", error);
+  }
+}
+
+// const Get all Products
+export const getAllProducts = async () => {
+  try {
+      const response = await fetch(`${proxy}/get_all_products`, {
+        method: 'GET',
+      })
+
+      let resResult;
+      await response.json().then((result) => (resResult = result));
+
+      if (!response.ok) {
+        throw resResult.message;
+      } else {
+        return resResult.data
+      }
+  } catch (error) {
+    toast.error("Unable to Get Products" + error);
+    console.error("Error:", error);
+  }
+}
+
+// get myAds
+
+export const getMyAds = async () => {
+  try {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      const response = await fetch(`${proxy}/get_my_ads`, {
+        method: 'GET',
+        headers: { 'authorization': `token ${token}` },
+      })
+
+      let resResult;
+      await response.json().then((result) => (resResult = result));
+
+      if (!response.ok) {
+        throw resResult.message;
+      } else {
+        return resResult.data
+      }
+    }
+  } catch (error) {
+    toast.error("Unable to Get Products" + error);
     console.error("Error:", error);
   }
 }

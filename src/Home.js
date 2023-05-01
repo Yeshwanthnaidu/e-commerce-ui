@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import DealsCarousel from "./Components/HomePage/DealsCarousel";
+import ProductCard from "./Components/HomePage/ProductCard";
 
 function Home() {
 
@@ -7,6 +8,7 @@ function Home() {
     <div style={{minHeight: '87.5vh'}}>
       {/* {showSellingModal && <ProductSellingPage />} */}
       <DealsCarousel />
+      <ProductCard />
     </div>
   );
 }

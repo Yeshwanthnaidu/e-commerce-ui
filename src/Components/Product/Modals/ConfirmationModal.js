@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
-import { mainSliceActions } from "../../../Store/MainSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from '../../../actions'
+import { useNavigate } from "react-router-dom";
 
 function ConfirmationModal(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const userData = useSelector(state => state.mainSlice.userData)
 
   const PublishAd = () => {
-    createProduct(props);
+    createProduct(props, props.setShowConfirmationModal, navigate, userData);
   };
 
   return (
@@ -22,25 +23,36 @@ function ConfirmationModal(props) {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1.2fr 2fr",
+              gridTemplateColumns: "1.3fr 2fr",
               gap: "30px",
             }}
           >
-            <div>Product Name : </div>
+            <div style={{fontWeight: '600'}}>Product Name : </div>
             <div>{props.props.productName}</div>
-            <div>Description:</div>
-            <div> {props.props.productName}</div>
-            <div>Type (N/R) :</div>
+            <div style={{fontWeight: '600'}}>Description:</div>
+            <div> {props.props.description}</div>
+            <div style={{fontWeight: '600'}}>Type (N/R) :</div>
             <div>{props.props.typeNR}</div>
-            <div>Product Type :</div>
+            <div style={{fontWeight: '600'}}>Product Type :</div>
             <div>{props.props.productType}</div>
-            <div>Manufacturer/Brand :</div>
+            <div style={{fontWeight: '600'}}>Manufacturer/Brand :</div>
             <div>{props.props.manufacturer}</div>
-            <div>Price :</div>
+            <div style={{fontWeight: '600'}}>Inventory Stock:</div>
+            <div>{props.props.stock}</div>
+            <div style={{fontWeight: '600'}}>Price :</div>
             <div>{props.props.price}</div>
-            <div>Discount:</div>
+            <div style={{fontWeight: '600'}}>Discount:</div>
             <div> {props.props.discount}</div>
-            <div>Image:</div>
+            <div style={{fontWeight: '600'}}>Technical Specifications:</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 2fr', gap: '10px' }}>
+              {props.props.techSpecs.map(spec => {
+                return <>
+                  <div style={{wordWrap: 'break-word', fontWeight: '600'}}>{spec.key} :</div>
+                  <div style={{wordWrap: 'break-word'}}>{spec.value}</div>
+                </>
+              })}
+            </div>
+            <div style={{fontWeight: '600'}}>Images:</div>
             <div>
               {props.props.images.map((image, i) => {
                 return <div key={i}>
