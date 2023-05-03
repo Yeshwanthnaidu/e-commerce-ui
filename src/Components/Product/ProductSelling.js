@@ -228,7 +228,7 @@ const ProductSellingPage = () => {
                         style={{
                           maxWidth: "200px",
                           maxHeight: "200px",
-                          objectFit: "cover",
+                          objectFit: "contain",
                           margin: "5px",
                         }}
                       />

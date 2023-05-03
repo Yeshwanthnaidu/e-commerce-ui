@@ -32,6 +32,7 @@ body {
   margin-right: auto;
   margin-top: 1%;
 }
+
 .center {
   border: 5px solid;
   text-align: center;
@@ -80,4 +81,19 @@ body {
   bottom: 0;
   width: 100%;
   text-align: center;
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.on {
+  color: #000;
+}
+
+.off {
+  color: #ccc;
 }

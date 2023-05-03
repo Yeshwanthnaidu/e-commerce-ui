@@ -6,13 +6,15 @@ import { getAllProducts, proxy } from '../../actions';
 import notFoundImage from '../../assets/notfound.jpg'
 import { useNavigate } from 'react-router-dom';
 
-const ProductCard = () => {
+const CategoryProductCards = (props) => {
     const navigate = useNavigate();
     const [productData, setProductData] = useState([]);
 
     useEffect(() => {
+        const { category } = props
+
         const getProductData = async () => {
-            setProductData(await getAllProducts())
+            setProductData(await getAllProducts(category))
         }
         getProductData();
     }, [])
@@ -22,14 +24,22 @@ const ProductCard = () => {
     }
 
     return (
-        <div style={{ margin: '10px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '15px'}}>
+        <div style={{ margin: '10px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '15px' }}>
             {productData?.length && productData.map(product => {
                 return (
                     <Card style={{ width: '18rem' }}>
                         <Carousel fade>
                             {product.images.map(imgUrl => {
                                 return (
-                                    <Carousel.Item onClick={() => { navigateToProduct(product._id) }}>
+                                    <Carousel.Item onClick={() => {
+                                        // make window go back to top
+                                        window.scrollTo({
+                                            top: 0,
+                                            left: 0,
+                                            behavior: 'smooth'
+                                        });
+                                        return navigateToProduct(product._id)
+                                    }}>
                                         <Card.Img variant="top" src={imgUrl}
                                             style={{
                                                 width: '300px',
@@ -42,7 +52,15 @@ const ProductCard = () => {
                                 )
                             })}
                         </Carousel>
-                        <Card.Body onClick={() => { navigateToProduct(product._id) }}>
+                        <Card.Body onClick={() => {
+                            // make window go back to top
+                            window.scrollTo({
+                                top: 0,
+                                left: 0,
+                                behavior: 'smooth'
+                            });
+                            return navigateToProduct(product._id)
+                        }}>
                             <Card.Title>{product.product_name}</Card.Title>
                             <Card.Text>{product.description}</Card.Text>
                             <Card.Text style={{ color: 'red', fontWeight: '1000' }}>Flat {product.discount}% Discount</Card.Text>
@@ -55,4 +73,4 @@ const ProductCard = () => {
     );
 }
 
-export default ProductCard
+export default CategoryProductCards

@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { mainSliceActions } from "./Store/MainSlice";
 
-const proxy = process.env.REACT_APP_PROXY_OFFICE;
+export const proxy = process.env.REACT_APP_PROXY_HOME;
 
 // TOken Verification
 const parseJwt = (token) => {
@@ -238,20 +238,24 @@ export const createProduct = async (productData, setShowConfirmationModal, navig
 }
 
 // const Get all Products
-export const getAllProducts = async () => {
+export const getAllProducts = async (category) => {
   try {
-      const response = await fetch(`${proxy}/get_all_products`, {
-        method: 'GET',
-      })
+    const formData = new FormData();
+    formData.append('category', category)
+    
+    const response = await fetch(`${proxy}/get_all_products`, {
+      method: 'POST',
+      body: formData
+    })
 
-      let resResult;
-      await response.json().then((result) => (resResult = result));
+    let resResult;
+    await response.json().then((result) => (resResult = result));
 
-      if (!response.ok) {
-        throw resResult.message;
-      } else {
-        return resResult.data
-      }
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      return resResult.data
+    }
   } catch (error) {
     toast.error("Unable to Get Products" + error);
     console.error("Error:", error);
@@ -259,7 +263,6 @@ export const getAllProducts = async () => {
 }
 
 // get myAds
-
 export const getMyAds = async () => {
   try {
     const token = localStorage.getItem('token');
@@ -282,5 +285,114 @@ export const getMyAds = async () => {
   } catch (error) {
     toast.error("Unable to Get Products" + error);
     console.error("Error:", error);
+  }
+}
+
+//Edit Product
+export const editProduct = async (productData, setShowEditConfirmationModal, setShowEditProduct, navigate) => {
+  try {
+    const formData = new FormData();
+    formData.append('id', productData.id)
+    formData.append('productName', productData.productName)
+    formData.append('description', productData.description)
+    formData.append('discount', productData.discount)
+    productData.images.map(image => formData.append('images', image))
+    formData.append('manufacturer', productData.manufacturer)
+    formData.append('price', productData.price)
+    formData.append('productType', productData.productType)
+    formData.append('techSpecs', JSON.stringify(productData.techSpecs))
+    formData.append('typeNewRefurbished', productData.typeNR)
+    formData.append('Stock', productData.stock)
+
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      const response = await fetch(`${proxy}/edit_product`, {
+        method: 'PUT',
+        headers: { 'authorization': `token ${token}` },
+        body: formData,
+      })
+
+      let resResult;
+      await response.json().then((result) => (resResult = result));
+
+      if (!response.ok) {
+        throw resResult.message;
+      } else {
+        console.log(setShowEditConfirmationModal)
+        toast.success('Product Updated Successfully')
+        setShowEditConfirmationModal(false);
+        setShowEditProduct(false);
+        navigate('/my_ads', { replace: true })
+        return resResult.data
+      }
+    }
+  } catch (error) {
+    toast.error("Unable to Edit" + error);
+    console.error("Error:", error);
+  }
+}
+
+//get Product
+export const getProduct = async (id) => {
+  try {
+    if (!id) throw 'Invalid ID'
+
+    const formData = new FormData();
+    formData.append('id', id)
+
+    const response = await fetch(`${proxy}/get_product`, {
+      method: 'POST',
+      body: formData,
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      return resResult.data
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Failed to get Product Data' + error)
+    }
+  }
+}
+
+//user Review
+export const userRatingToProduct = async (ratingData) => {
+  try {
+    if (!ratingData.id) throw 'Invalid ID'
+
+    const formData = new FormData();
+    formData.append('id', ratingData.id)
+    formData.append('starRating', ratingData.starRating)
+    formData.append('review', ratingData.review)
+    formData.append('user', ratingData.user)
+    formData.append('username', ratingData.username)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/product_review`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData,
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      toast.success('Thanks for Reviewing')
+      return resResult
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Unable to Review' + error)
+    }
   }
 }

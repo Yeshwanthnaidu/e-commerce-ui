@@ -17,7 +17,7 @@ function ForgotUsername() {
   const handleLogin = async () => {
     if (!email) return toast.error("Please Enter Email");
     let response = await forgotUsernameSubmit(email);
-    document.getElementById("response_div").classList.add("forgotSuccess");
+    document.getElementById("response_div")?.classList?.add("forgotSuccess");
     document.getElementById("response_div").innerHTML = response.message;
   };
 
