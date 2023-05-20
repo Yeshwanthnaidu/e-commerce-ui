@@ -1,16 +1,18 @@
 import { React, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Carousel from 'react-bootstrap/Carousel';
 import { useSelector } from 'react-redux';
 
-import { getProduct, userRatingToProduct } from '../../actions';
+import { getProduct, userRatingToProduct, addToCart } from '../../actions';
 import oopsPageNotFound from '../../assets/oopsPageNotFound.jpg';
 import notFOundImage from '../../assets/notfound.jpg'
 // import ProductCard from '../HomePage/ProductCard';
 import CategoryProductCards from './CategoryProductCards';
 
 const ViewProduct = () => {
+    const navigate = useNavigate();
+    
     const [rating, setRating] = useState(0);
     const [review, setReview] = useState('');
     const [productData, setProductData] = useState({});
@@ -23,6 +25,7 @@ const ViewProduct = () => {
     const { id } = useParams();
 
     useEffect(() => {
+        // work here for 'oops!!' message timing
         const getProductData = async (id) => {
             setProductData(await getProduct(id))
         }
@@ -36,6 +39,16 @@ const ViewProduct = () => {
             userRatingToProduct(ratingData)
             setRating(0);
             setReview('');
+        }
+    }
+
+    // Add to Cart
+    const handleAddToCart = () => {
+        if(loginStatus) {
+            const AddProduct = {id: productData._id, username: userData.username};
+            addToCart(AddProduct)
+        } else {
+            navigate('/login')
         }
     }
 
@@ -146,7 +159,7 @@ const ViewProduct = () => {
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
                                 <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md'>Buy Now</Button></div>
-                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md'>Add to Cart</Button></div>
+                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={handleAddToCart} size='md'>Add to Cart</Button></div>
                                 <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md'>Add to Wishlist</Button></div>
                                 <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md'>Contact Seller</Button></div>
                             </div>
@@ -196,11 +209,11 @@ const ViewProduct = () => {
             </div> :
             <div style={{ minHeight: '87.5vh', backgroundColor: 'white' }}>
                 <div>
-                    {setTimeout(() => {
+                    <img src={oopsPageNotFound} style={{ width: '98.9vw' }} />
+                    {/* {setTimeout(() => {
                         return <>
-                            <img src={oopsPageNotFound} style={{ width: '98.9vw' }} />
                         </>
-                    }, [5000])}
+                    }, [5000])} */}
                 </div>
             </div>
     )

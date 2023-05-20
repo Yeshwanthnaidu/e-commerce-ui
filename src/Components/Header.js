@@ -59,6 +59,14 @@ function Header() {
     }
   }
 
+  const showCartBtnClicked = () => {
+    if (loginStatus) {
+      navigate('/show_cart')
+    } else {
+      navigate('/login')
+    }
+  }
+
   return (
     <div>
       <Navbar className="header_styles" expand="lg">
@@ -74,7 +82,7 @@ function Header() {
               navbarScroll
             >
               <Nav.Link
-                href="#action1"
+                href="/"
                 style={{ color: "white", fontWeight: "600" }}
               >
                 Home
@@ -154,14 +162,14 @@ function Header() {
                     />
                     My Ads
                   </Button>
-                  <a className="dropdown-item" href="#">
+                  <Button className="dropdown-item" onClick={showCartBtnClicked}>
                     {" "}
                     <FontAwesomeIcon
                       icon="fa-solid fa-cart-shopping"
                       style={{ marginRight: "5px" }}
                     />{" "}
                     Shopping Cart
-                  </a>
+                  </Button>
                   <a className="dropdown-item" href="#">
                     {" "}
                     <FontAwesomeIcon

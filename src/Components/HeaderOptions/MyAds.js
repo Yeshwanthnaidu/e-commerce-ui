@@ -46,11 +46,15 @@ function MyAds() {
                                     )
                                 })}
                             </Carousel>
-                            <Card.Body onClick={() => { navigateToProduct(product._id) }}>
-                                <Card.Title>{product.product_name}</Card.Title>
-                                <Card.Text>{product.description}</Card.Text>
-                                <Card.Text style={{ color: 'red', fontWeight: '1000' }}>Flat {product.discount}% Discount</Card.Text>
-                                <Card.Text style={{ fontWeight: '600' }}>Special Price: {Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))} <s style={{ fontSize: '12px' }}>{product.price}</s></Card.Text>
+                            <Card.Body onClick={() => { navigateToProduct(product._id) }} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                <div style={{ marginBottom: '10px' }}>
+                                    <Card.Title>{product.product_name}</Card.Title>
+                                    <Card.Text>{product.description}</Card.Text>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', }}>
+                                    <Card.Text style={{ color: 'red', fontWeight: '1000' }}>Flat {product.discount}% Discount</Card.Text>
+                                    <Card.Text style={{ fontWeight: '600' }}>Special Price: &#8377; {Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))} <s style={{ fontSize: '12px' }}>{product.price}</s></Card.Text>
+                                </div>
                             </Card.Body>
                             <div style={{ display: 'flex', gap: '10px', margin: '10px' }}>
                                 <Button onClick={() => { navigateToProduct(product._id) }}>View</Button>

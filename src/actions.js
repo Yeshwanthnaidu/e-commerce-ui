@@ -242,7 +242,7 @@ export const getAllProducts = async (category) => {
   try {
     const formData = new FormData();
     formData.append('category', category)
-    
+
     const response = await fetch(`${proxy}/get_all_products`, {
       method: 'POST',
       body: formData
@@ -393,6 +393,128 @@ export const userRatingToProduct = async (ratingData) => {
   } catch (error) {
     if (error) {
       toast.error('Unable to Review' + error)
+    }
+  }
+}
+
+//Add to Cart
+export const addToCart = async (userAndProduct) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', userAndProduct.username);
+    formData.append('productId', userAndProduct.id)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/add_to_cart`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData,
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      toast.success('Added to Cart')
+      return resResult
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Failed to Add to Cart' + error)
+    }
+  }
+}
+
+//get Cart Data
+export const getCartData = async (username) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', username)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/cart_data`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData,
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      return resResult.data
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Failed to get Cart data' + error)
+    }
+  }
+}
+
+//Manage Quanity of product in Cart
+export const manageProductQuantity = async (userProductDataAndQuantity) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', userProductDataAndQuantity.username);
+    formData.append('productId', userProductDataAndQuantity.productId);
+    formData.append('updateQuantityBy', userProductDataAndQuantity.update)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/product_cart_quantity`, {
+      method: 'PUT',
+      headers: { 'authorization': `token ${token}` },
+      body: formData,
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      return resResult
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Failed to get Cart data' + error)
+    }
+  }
+}
+
+//Remove Product from Cart
+export const removeProductFromCart = async (productAndUserData) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', productAndUserData.username);
+    formData.append('productId', productAndUserData.productId);
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/remove_cart_product`, {
+      method: 'DELETE',
+      headers: { 'authorization': `token ${token}` },
+      body: formData,
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      toast.success('Removed from Cart')
+      return resResult
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Unable to Remove' + error)
     }
   }
 }

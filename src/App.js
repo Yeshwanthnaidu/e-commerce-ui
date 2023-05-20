@@ -12,6 +12,7 @@ import Footer from "./Components/Footer.js";
 import ProductSellingPage from "./Components/Product/ProductSelling.js";
 import MyAds from "./Components/HeaderOptions/MyAds.js";
 import ViewProduct from "./Components/Product/ViewProduct.js";
+import ViewCart from "./Components/Product/ViewCart.js";
 
 function App() {
   const loginStatus = useSelector(state => state.mainSlice.loginStatus)
@@ -26,7 +27,8 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />}></Route>
         <Route path='/view_product/:id' element={<ViewProduct />}></Route>
         {loginStatus && <Route path="/sell_your_product" element={<ProductSellingPage />}></Route>}
-        {loginStatus && <Route path="/my_ads" element={<MyAds />}></Route>} 
+        {loginStatus && <Route path="/my_ads" element={<MyAds />}></Route>}
+        {loginStatus && <Route path='/show_cart' element={<ViewCart />}></Route>}
       </Routes>
       <Footer />
     </div>

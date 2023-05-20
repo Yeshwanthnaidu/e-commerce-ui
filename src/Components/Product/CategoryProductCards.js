@@ -52,7 +52,7 @@ const CategoryProductCards = (props) => {
                                 )
                             })}
                         </Carousel>
-                        <Card.Body onClick={() => {
+                        <Card.Body style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} onClick={() => {
                             // make window go back to top
                             window.scrollTo({
                                 top: 0,
@@ -61,10 +61,14 @@ const CategoryProductCards = (props) => {
                             });
                             return navigateToProduct(product._id)
                         }}>
-                            <Card.Title>{product.product_name}</Card.Title>
-                            <Card.Text>{product.description}</Card.Text>
-                            <Card.Text style={{ color: 'red', fontWeight: '1000' }}>Flat {product.discount}% Discount</Card.Text>
-                            <Card.Text style={{ fontWeight: '600' }}>Special Price: {Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))} <s style={{ fontSize: '12px' }}>{product.price}</s></Card.Text>
+                            <div style={{ marginBottom: '10px' }}>
+                                <Card.Title>{product.product_name}</Card.Title>
+                                <Card.Text>{product.description}</Card.Text>
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', }}>
+                                <Card.Text style={{ color: 'red', fontWeight: '1000' }}>Flat {product.discount}% Discount</Card.Text>
+                                <Card.Text style={{ fontWeight: '600' }}>Special Price: &#8377; {Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))} <s style={{ fontSize: '12px' }}>{product.price}</s></Card.Text>
+                            </div>
                         </Card.Body>
                     </Card>
                 )
