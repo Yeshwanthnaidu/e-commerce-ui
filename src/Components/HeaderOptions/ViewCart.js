@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import { Button } from 'react-bootstrap';
-
-import { getCartData, manageProductQuantity, removeProductFromCart } from '../../actions';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
+
+import { getCartData, manageProductQuantity, removeProductFromCart } from '../../actions';
 
 
 const ViewCart = () => {
@@ -44,12 +44,16 @@ const ViewCart = () => {
         await getcartData()
     }
 
+    const handleProceedToCheckout = () => {
+        window.open('https://www.youtube.com/watch?v=YLF4sKkUzSQ&ab_channel=DhinchakPooja', '_blank')
+    }
+
     return (
         <div style={{ minHeight: '88.1vh', backgroundColor: '#E5E5E5', display: 'flex', flexDirection: 'column', gap: '30px', padding: '30px' }}>
             {cartProducts?.length ?
                 <div>
                     <div style={{ fontSize: '30px', fontWeight: '600' }}>Showing Cart:</div>
-                    <Button style={{ backgroundColor: 'gold', color: 'black', float: 'right' }} size='md'>Proceed to Checkout All Items ({cartProducts?.length})</Button>
+                    <Button style={{ backgroundColor: 'gold', color: 'black', float: 'right' }} onClick={handleProceedToCheckout} size='md'>Proceed to Checkout All Items ({cartProducts?.length})</Button>
                 </div> : null}
             {cartProducts?.length ?
                 cartProducts.map((product, index) => {
@@ -78,7 +82,9 @@ const ViewCart = () => {
                                     <Card.Title>{product.product_name}</Card.Title>
                                     <Card.Text>{product.description}</Card.Text>
                                     <Card.Text style={{ color: 'red', fontWeight: '1000' }}>Flat {product.discount}% Discount</Card.Text>
-                                    <Card.Text style={{ fontWeight: '600' }}>Special Price: &#8377; {(Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))) * product.quantity} <s style={{ fontSize: '12px' }}>{product.price * product.quantity}</s></Card.Text>
+                                    <Card.Text id={`productPrice${index}`} style={{ fontWeight: '600' }}>
+                                        Special Price: &#8377; {(Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))) * product.quantity} <s style={{ fontSize: '12px' }}>{product.price * product.quantity}</s>
+                                    </Card.Text>
                                 </Card.Body>
                             </div>
                             <div className="col-md-3" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly' }}>
@@ -88,9 +94,11 @@ const ViewCart = () => {
                                         size='sm'
                                         onClick={() => {
                                             const inputElement = document.getElementById(`productQuantity${index}`);
+                                            const productPrice = document.getElementById(`productPrice${index}`)
                                             const currentQuantity = parseInt(inputElement.value, 10);
                                             if (currentQuantity > 1) {
                                                 inputElement.value = currentQuantity - 1;
+                                                productPrice.innerHTML = `Special Price: &#8377; ${(Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))) * inputElement.value} <s style={{ fontSize: '12px' }}>${product.price * inputElement.value}</s>`
                                                 decreaseProductQuantity(product._id)
                                             } else {
                                                 toast.error("Can't be 0");
@@ -110,9 +118,11 @@ const ViewCart = () => {
                                         size='sm'
                                         onClick={() => {
                                             const inputElement = document.getElementById(`productQuantity${index}`);
+                                            const productPrice = document.getElementById(`productPrice${index}`)
                                             const currentQuantity = parseInt(inputElement.value, 10);
                                             if (currentQuantity < 5) {
                                                 inputElement.value = currentQuantity + 1;
+                                                productPrice.innerHTML = `Special Price: &#8377; ${(Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))) * inputElement.value} <s style={{ fontSize: '12px' }}>${product.price * inputElement.value}</s>`
                                                 increaseProductQuantity(product._id)
                                             } else {
                                                 toast.error("Can't set more than 5");

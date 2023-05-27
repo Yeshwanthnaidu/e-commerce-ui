@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Carousel from 'react-bootstrap/Carousel';
 import { useSelector } from 'react-redux';
 
-import { getProduct, userRatingToProduct, addToCart } from '../../actions';
+import { getProduct, userRatingToProduct, addToCart, addProductToWishlist } from '../../actions';
 import oopsPageNotFound from '../../assets/oopsPageNotFound.jpg';
 import notFOundImage from '../../assets/notfound.jpg'
 // import ProductCard from '../HomePage/ProductCard';
@@ -47,6 +47,19 @@ const ViewProduct = () => {
         if(loginStatus) {
             const AddProduct = {id: productData._id, username: userData.username};
             addToCart(AddProduct)
+        } else {
+            navigate('/login')
+        }
+    }
+
+    const contactSellerBtnClicked = (sellerEmail) => {
+        window.open(`https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=${sellerEmail}`, '_blank')
+    }
+
+    const handleAddToWishlist = () => {
+        if(loginStatus) {
+            const AddProduct = {id: productData._id, username: userData.username};
+            addProductToWishlist(AddProduct)
         } else {
             navigate('/login')
         }
@@ -160,8 +173,8 @@ const ViewProduct = () => {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
                                 <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md'>Buy Now</Button></div>
                                 <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={handleAddToCart} size='md'>Add to Cart</Button></div>
-                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md'>Add to Wishlist</Button></div>
-                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md'>Contact Seller</Button></div>
+                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={handleAddToWishlist} size='md'>Add to Wishlist</Button></div>
+                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={() => {contactSellerBtnClicked(productData.SellerContact)}} size='md'>Contact Seller</Button></div>
                             </div>
                         </div>
                     </div>

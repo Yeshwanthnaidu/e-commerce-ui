@@ -14,18 +14,35 @@ import { useDispatch, useSelector } from "react-redux";
 import { mainSliceActions } from "./../Store/MainSlice.js";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getAllProducts } from "../actions";
 
 import UserProfileModal from "./Auth/Modals/UserProfileModal";
 
+import { FormControl, InputGroup } from "react-bootstrap";
+
 function Header() {
   const [showUserProfile, setShowUserProfile] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [products, setProductData] = useState([]);
+  const showSearchOptions = useSelector((state) => state.mainSlice.showSearchOptions);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const loginStatus = useSelector((state) => state.mainSlice.loginStatus);
   const userData = useSelector((state) => state.mainSlice.userData);
+
+  useEffect(() => {
+    const getProductData = async () => {
+      setProductData(await getAllProducts())
+    }
+    getProductData();
+  }, [])
+
+  useEffect(() => {
+
+  }, [searchTerm])
 
   const loginBtnClicked = () => {
     navigate("/login", { replace: true });
@@ -67,6 +84,12 @@ function Header() {
     }
   }
 
+  const handleSearchFromDrodown = async (productData) => {
+    setSearchTerm(productData.product_name)
+    dispatch(mainSliceActions.showSearchOptions(false))
+    navigate(`/search/${productData.product_name}`)
+  }
+
   return (
     <div>
       <Navbar className="header_styles" expand="lg">
@@ -94,20 +117,63 @@ function Header() {
                 Deals
               </Nav.Link>
             </Nav>
-            <Form className="d-flex" style={{ marginRight: "8vw" }}>
+            <Form className="d-flex" style={{ marginLeft: '10px', marginRight: "7vw" }}>
               <Form.Control
-                style={{ width: "40vw" }}
+                style={{ width: "38vw", borderRadius: '0px', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px' }}
+                value={searchTerm.slice(0, 70)}
                 type="search"
                 placeholder="Search"
                 className="me-2"
                 aria-label="Search"
+                onChange={(e) => { setSearchTerm(e.target.value), dispatch(mainSliceActions.showSearchOptions(true)) }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === 'NumpadEnter') {
+                    e.preventDefault();
+                    dispatch(mainSliceActions.showSearchOptions(false))
+                    navigate(`/search/${searchTerm}`)
+                  }
+                }
+                }
               />
-              <Button
-                style={{ backgroundColor: "black" }}
-                variant="outline-success"
-              >
-                <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
-              </Button>
+              <button style={{
+                fontSize: '20px',
+                fontWeight: '600',
+                ZIndex: '100',
+                color: 'black',
+                cursor: 'pointer',
+                marginLeft: '-8px',
+                borderRadius: '0px 12px 12px 0px',
+                background: 'white',
+                border: 'none',
+                marginRight: '10px',
+                width: '35px'
+              }}
+                onClick={(e) => { e.preventDefault(), setSearchTerm('') }} >
+                X
+              </button>
+              {products && products.length && searchTerm !== '' && showSearchOptions ?
+                <div style={{ width: '40vw', position: 'absolute', top: '50px', zIndex: '10', background: 'white', borderBottomLeftRadius: '5px', borderBottomRightRadius: '5px' }}>
+                  {products.filter((product) => {
+                    const formattedTitle = product.product_name.toLowerCase().split(' ');
+                    const formattedQuery = searchTerm.toLowerCase().split(' ');
+                    const isPartialMatch = (formattedQuery.every(word => formattedTitle.includes(word)) ||
+                      formattedTitle.some(word => word.toLowerCase().includes(searchTerm.trim().split(' ').slice(-1)[0].toLowerCase()) && word.startsWith(searchTerm.trim().split(' ').slice(-1)[0].toLowerCase()[0])))
+
+                    const query = searchTerm.toLowerCase().replace(/\s/g, '').split('')
+                    const productCategory = product.product_type.toLowerCase().replace(/\s/g, '').split('')
+
+                    if (searchTerm.split(' ').slice(0, -1).length >= 1) {
+                      return (searchTerm.split(' ').slice(0, -1).every(word => formattedTitle.includes(word)) && isPartialMatch) || query.every(letter => productCategory.includes(letter))
+                    }
+
+
+                    return isPartialMatch || query.every(letter => productCategory.includes(letter))
+                  }).slice(0, 7).map(productData => {
+                    return <div onClick={() => handleSearchFromDrodown(productData)}
+                      style={{ background: '#E5E5E5', color: 'black', width: '99%', float: 'left', margin: '3px', padding: '5px', cursor: 'pointer' }}>{productData.product_name.slice(0, 70) + `${productData.product_name.length > 70 ? '...' : ''}`}</div>
+                  })}
+                </div>
+                : null}
             </Form>
             {loginStatus && (
               <Button
@@ -178,14 +244,14 @@ function Header() {
                     />{" "}
                     Orders
                   </a>
-                  <a className="dropdown-item" href="#">
+                  <Button className="dropdown-item" onClick={() => { navigate('/show_wishlist') }}>
                     {" "}
                     <FontAwesomeIcon
                       icon="fa-solid fa-pen-to-square"
                       style={{ marginRight: "5px" }}
                     />{" "}
                     Wish List
-                  </a>
+                  </Button>
                   <div className="dropdown-divider"></div>
                   <a className="dropdown-item" href="#">
                     <FontAwesomeIcon
@@ -195,7 +261,7 @@ function Header() {
                     Cancel/Return
                   </a>
                   <div className="dropdown-divider"></div>
-                  <a className="dropdown-item" href="#">
+                  <a className="dropdown-item" href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=yeshwanth.ch.naidu@gmail.com" target='_blank'>
                     <FontAwesomeIcon icon="fa-solid fa-user-shield" style={{ marginRight: "5px" }} />
                     Customer Service
                   </a>
@@ -248,7 +314,7 @@ function Header() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      {showUserProfile && <UserProfileModal setShowUserProfile={setShowUserProfile}/>}
+      {showUserProfile && <UserProfileModal setShowUserProfile={setShowUserProfile} />}
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import { toast } from "react-toastify";
 import { mainSliceActions } from "./Store/MainSlice";
 
-export const proxy = process.env.REACT_APP_PROXY_HOME;
+// export const proxy = process.env.REACT_APP_PROXY_HOME;
+export const proxy = 'http://172.30.144.1:8000' // process.env.REACT_APP_PROXY_OFFICE;
 
 // TOken Verification
 const parseJwt = (token) => {
@@ -511,6 +512,123 @@ export const removeProductFromCart = async (productAndUserData) => {
     } else {
       toast.success('Removed from Cart')
       return resResult
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Unable to Remove' + error)
+    }
+  }
+}
+
+// Add Product to Wishlist
+export const addProductToWishlist = async (userAndProduct) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', userAndProduct.username);
+    formData.append('productId', userAndProduct.id)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/add_to_wishlist`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData,
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      toast.success('Added to Wishlist')
+      return resResult
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Failed to Add to Wishlist' + error)
+    }
+  }
+}
+
+//get wishlist Products
+export const getWishlistData = async (username) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', username)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/wishlist_data`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData,
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      return resResult.data
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Failed to get Wishlist data' + error)
+    }
+  }
+}
+
+//Remove Product from Wishlist
+export const removeProductFromWishlist = async (productAndUserData) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', productAndUserData.username);
+    formData.append('productId', productAndUserData.productId);
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/remove_wishlist_product`, {
+      method: 'DELETE',
+      headers: { 'authorization': `token ${token}` },
+      body: formData,
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      toast.success('Removed from Wishlist')
+      return resResult
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Unable to Remove' + error)
+    }
+  }
+}
+
+// get search Data
+export const getSearchData = async (searchTerm) => {
+  try {
+    const formData = new FormData();
+    formData.append('searchTerm', searchTerm);
+
+    const response = await fetch(`${proxy}/search`, {
+      method: 'POST',
+      body: formData,
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      return resResult.data
     }
   } catch (error) {
     if (error) {

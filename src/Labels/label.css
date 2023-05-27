@@ -1,5 +1,6 @@
 body {
-  background-image: url("../assets/AuthBG.jpg");
+  /* background-image: url("../assets/AuthBG.jpg"); */
+  background-color: #252525;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;

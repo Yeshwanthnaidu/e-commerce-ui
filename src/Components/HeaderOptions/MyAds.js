@@ -29,7 +29,7 @@ function MyAds() {
             <div style={{ margin: '10px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', cursor: 'pointer' }}>
                 {!showEditProduct && adData && adData.map((product, index) => {
                     return (
-                        <Card style={{ width: '18rem' }} key={index}>
+                        <Card style={{ width: '18rem', marginTop: '10px' }} key={index}>
                             <Carousel fade>
                                 {product.images.map(imgUrl => {
                                     return (
