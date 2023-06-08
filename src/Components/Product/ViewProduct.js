@@ -2,20 +2,27 @@ import { React, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import Carousel from 'react-bootstrap/Carousel';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { getProduct, userRatingToProduct, addToCart, addProductToWishlist } from '../../actions';
-import oopsPageNotFound from '../../assets/oopsPageNotFound.jpg';
+import { mainSliceActions } from '../../Store/MainSlice';
+
 import notFOundImage from '../../assets/notfound.jpg'
+import oopsPageNotFound from '../../assets/oopsPageNotFound.jpg'
 // import ProductCard from '../HomePage/ProductCard';
 import CategoryProductCards from './CategoryProductCards';
 
+import SpinnerPage from '../Utils/SpinnerPage';
+
 const ViewProduct = () => {
     const navigate = useNavigate();
-    
+    const dispatch = useDispatch();
+
     const [rating, setRating] = useState(0);
     const [review, setReview] = useState('');
     const [productData, setProductData] = useState({});
+
+    const [showLoading, setShowLoading] = useState(true)
 
     //Login Status
     const loginStatus = useSelector(state => state.mainSlice.loginStatus)
@@ -25,9 +32,9 @@ const ViewProduct = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        // work here for 'oops!!' message timing
         const getProductData = async (id) => {
             setProductData(await getProduct(id))
+            setShowLoading(false)
         }
         getProductData(id)
     }, [id])
@@ -44,8 +51,8 @@ const ViewProduct = () => {
 
     // Add to Cart
     const handleAddToCart = () => {
-        if(loginStatus) {
-            const AddProduct = {id: productData._id, username: userData.username};
+        if (loginStatus) {
+            const AddProduct = { id: productData._id, username: userData.username };
             addToCart(AddProduct)
         } else {
             navigate('/login')
@@ -57,9 +64,17 @@ const ViewProduct = () => {
     }
 
     const handleAddToWishlist = () => {
-        if(loginStatus) {
-            const AddProduct = {id: productData._id, username: userData.username};
+        if (loginStatus) {
+            const AddProduct = { id: productData._id, username: userData.username };
             addProductToWishlist(AddProduct)
+        } else {
+            navigate('/login')
+        }
+    }
+
+    const handleBuyNow = async (productId) => {
+        if (loginStatus) {
+            navigate(`/book_now/${productId}`)
         } else {
             navigate('/login')
         }
@@ -171,10 +186,10 @@ const ViewProduct = () => {
                                 </>}
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
-                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md'>Buy Now</Button></div>
+                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md' onClick={() => { handleBuyNow(productData._id) }}>Buy Now</Button></div>
                                 <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={handleAddToCart} size='md'>Add to Cart</Button></div>
                                 <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={handleAddToWishlist} size='md'>Add to Wishlist</Button></div>
-                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={() => {contactSellerBtnClicked(productData.SellerContact)}} size='md'>Contact Seller</Button></div>
+                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={() => { contactSellerBtnClicked(productData.SellerContact) }} size='md'>Contact Seller</Button></div>
                             </div>
                         </div>
                     </div>
@@ -222,11 +237,7 @@ const ViewProduct = () => {
             </div> :
             <div style={{ minHeight: '87.5vh', backgroundColor: 'white' }}>
                 <div>
-                    <img src={oopsPageNotFound} style={{ width: '98.9vw' }} />
-                    {/* {setTimeout(() => {
-                        return <>
-                        </>
-                    }, [5000])} */}
+                    {showLoading ? <SpinnerPage /> : <img src={oopsPageNotFound} style={{ width: '98.9vw' }} />}
                 </div>
             </div>
     )

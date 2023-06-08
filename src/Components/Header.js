@@ -3,23 +3,26 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import Logo from "../assets/logo.png";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip';
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faScrewdriverWrench } from "@fortawesome/free-solid-svg-icons";
+import { faMoneyBillTrendUp } from "@fortawesome/free-solid-svg-icons";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 library.add(fas);
 
+import Logo from "../assets/logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { mainSliceActions } from "./../Store/MainSlice.js";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { getAllProducts } from "../actions";
 
 import UserProfileModal from "./Auth/Modals/UserProfileModal";
 
-import { FormControl, InputGroup } from "react-bootstrap";
 
 function Header() {
   const [showUserProfile, setShowUserProfile] = useState(false);
@@ -90,34 +93,55 @@ function Header() {
     navigate(`/search/${productData.product_name}`)
   }
 
+
+  const renderTooltip = (props) => <Tooltip {...props}>
+    <div>
+      <h6>DoorStep Repair</h6>
+      <p style={{ display: 'grid', gridTemplateColumns: '2fr 10fr', textAlign: 'left', padding: '5px' }}>
+        <span>
+          1.
+        </span>
+        <span>
+          Book a Technician for only 150rs.
+        </span>
+        <span>2.</span>
+        <span>All Brands Services Available.</span>
+        <span>3.</span>
+        <span>6 Months PLACART Warranty on the Service and Parts Replaced by PLACART Team.</span>
+        <span>4.</span>
+        <span>PC Building and Networking, All kind of set ups</span>
+      </p>
+    </div>
+  </Tooltip>
+
   return (
     <div>
       <Navbar className="header_styles" expand="lg">
         <Container fluid>
-          <Navbar.Brand href="#">
+          <Navbar.Brand>
             <img src={Logo} alt="plaCart-performace" height="50vh" onClick={() => navigate('/')} />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />
-          <Navbar.Collapse id="navbarScroll">
-            <Nav
-              className="me-auto my-2 my-lg-0"
-              style={{ maxHeight: "100px" }}
-              navbarScroll
+          <Nav
+            className="me-auto my-2 my-lg-0"
+            style={{ maxHeight: "100px" }}
+            navbarScroll
+          >
+            <Nav.Link
+              href="/"
+              style={{ color: "white", fontWeight: "600" }}
             >
-              <Nav.Link
-                href="/"
-                style={{ color: "white", fontWeight: "600" }}
-              >
-                Home
-              </Nav.Link>
-              <Nav.Link
-                href="#action2"
-                style={{ color: "white", fontWeight: "600" }}
-              >
-                Deals
-              </Nav.Link>
-            </Nav>
-            <Form className="d-flex" style={{ marginLeft: '10px', marginRight: "7vw" }}>
+              Home
+            </Nav.Link>
+            <Nav.Link
+              href="#action2"
+              style={{ color: "white", fontWeight: "600" }}
+            >
+              Deals
+            </Nav.Link>
+          </Nav>
+          <Navbar.Collapse id="navbarScroll" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Form className="d-flex" style={{ marginLeft: '5%' }}>
               <Form.Control
                 style={{ width: "38vw", borderRadius: '0px', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px' }}
                 value={searchTerm.slice(0, 70)}
@@ -175,25 +199,17 @@ function Header() {
                 </div>
                 : null}
             </Form>
-            {loginStatus && (
-              <Button
-                style={{
-                  color: "white",
-                  backgroundColor: "black",
-                  width: "11vw",
-                  marginLeft: "-80px",
-                }}
-                onClick={() => {
-                  // dispatch(mainSliceActions.showsellingModal(true));
-                  navigate('/sell_your_product', { replace: true })
-                }}
-                variant="outline-success"
-              >
-                {" "}
-                <FontAwesomeIcon icon="fa-solid fa-rectangle-ad" /> Sell your
-                Product
-              </Button>
-            )}
+            <div style={!loginStatus ? { marginLeft: '-12%' } : null}>
+              <OverlayTrigger
+                delay={{ hide: 500, show: 300 }}
+                placement="bottom"
+                overlay={renderTooltip}>
+                <Button style={{ display: 'flex', gap: '10px', alignItems: 'center' }} variant="dark">
+                  <FontAwesomeIcon icon={faScrewdriverWrench} />
+                  Book a Technician
+                </Button>
+              </OverlayTrigger>
+            </div>
             {loginStatus && (
               <div style={{ margin: "10px" }} className="btn-group">
                 <button
@@ -221,6 +237,16 @@ function Header() {
                   <span className="sr-only">Toggle Dropdown</span>
                 </button>
                 <div className="dropdown-menu">
+                  <Button
+                    className="dropdown-item"
+                    onClick={() => {
+                      navigate('/sell_your_product', { replace: true })
+                    }}
+                  >
+                    {" "}
+                    <FontAwesomeIcon icon={faMoneyBillTrendUp} /> Sell your
+                    Product
+                  </Button>
                   <Button className="dropdown-item" onClick={myAdsBtnCLicked}>
                     <FontAwesomeIcon
                       icon="fas fa-ad"
@@ -236,14 +262,14 @@ function Header() {
                     />{" "}
                     Shopping Cart
                   </Button>
-                  <a className="dropdown-item" href="#">
+                  <Button className="dropdown-item" onClick={() => { navigate('/your_orders') }}>
                     {" "}
                     <FontAwesomeIcon
                       icon="fa-solid fa-box-open"
                       style={{ marginRight: "5px" }}
                     />{" "}
                     Orders
-                  </a>
+                  </Button>
                   <Button className="dropdown-item" onClick={() => { navigate('/show_wishlist') }}>
                     {" "}
                     <FontAwesomeIcon
@@ -274,7 +300,7 @@ function Header() {
               navbarScroll
             >
               {!loginStatus ? (
-                <>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Nav.Link
                     variant="outline-none"
                     onClick={loginBtnClicked}
@@ -289,9 +315,9 @@ function Header() {
                   >
                     Register
                   </Button>
-                </>
+                </div>
               ) : (
-                <>
+                <div>
                   <Button
                     variant="outline-none"
                     onClick={logoutBtnClicked}
@@ -308,7 +334,7 @@ function Header() {
                     />
                     Logout
                   </Button>
-                </>
+                </div>
               )}
             </Nav>
           </Navbar.Collapse>

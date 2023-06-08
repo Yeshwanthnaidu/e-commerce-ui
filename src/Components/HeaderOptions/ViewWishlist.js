@@ -3,13 +3,15 @@ import { Card } from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { getWishlistData, addToCart, removeProductFromWishlist } from '../../actions';
 
 
 const ViewWishlist = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch();
+
     const [wishlistProducts, SetWishlistProducts] = useState([]);
 
     //Login Status
@@ -31,8 +33,8 @@ const ViewWishlist = () => {
     }
 
     const handleAddToCart = async (productId) => {
-        if(loginStatus) {
-            const AddProduct = {id: productId, username: userData.username};
+        if (loginStatus) {
+            const AddProduct = { id: productId, username: userData.username };
             addToCart(AddProduct)
         } else {
             navigate('/login')
@@ -43,6 +45,14 @@ const ViewWishlist = () => {
         const productData = { productId, username: userData.username };
         await removeProductFromWishlist(productData)
         await setWishlistData()
+    }
+
+    const handleBuyNow = async (productId) => {
+        if (loginStatus) {
+            navigate(`/book_now/${productId}`)
+        } else {
+            navigate('/login')
+        }
     }
 
     return (
@@ -82,7 +92,7 @@ const ViewWishlist = () => {
                                 </Card.Body>
                             </div>
                             <div className="col-md-3" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly' }}>
-                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md'>Buy Now</Button></div>
+                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md' onClick={() => { handleBuyNow(product._id) }}>Buy Now</Button></div>
                                 <div><Button style={{ backgroundColor: '#E5E5E5', color: 'black', width: '30vh' }} size='md' onClick={() => { handleAddToCart(product._id) }}>Add to Cart</Button></div>
                                 <div><Button style={{ backgroundColor: '#E5E5E5', color: 'black', width: '30vh' }} size='md' onClick={() => { handleRemoveFromWIshlist(product._id) }}>Remove From WishList</Button></div>
                             </div>

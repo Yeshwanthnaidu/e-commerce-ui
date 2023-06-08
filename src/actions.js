@@ -2,7 +2,8 @@ import { toast } from "react-toastify";
 import { mainSliceActions } from "./Store/MainSlice";
 
 // export const proxy = process.env.REACT_APP_PROXY_HOME;
-export const proxy = 'http://172.30.144.1:8000' // process.env.REACT_APP_PROXY_OFFICE;
+export const proxy = 'http://10.0.4.180:8000'
+// export const proxy = 'http://172.30.144.1:8000' // process.env.REACT_APP_PROXY_OFFICE;
 
 // TOken Verification
 const parseJwt = (token) => {
@@ -633,6 +634,315 @@ export const getSearchData = async (searchTerm) => {
   } catch (error) {
     if (error) {
       toast.error('Unable to Remove' + error)
+    }
+  }
+}
+
+// add Address to User Data
+export const addAddress = async (userAndAddressData, showAddAddressModal, dispatch) => {
+  try {
+    const { username,
+      firstName,
+      lastName,
+      address,
+      landmark,
+      selectedState,
+      selectedCity,
+      pincode,
+      phoneNumber } = userAndAddressData;
+
+    const formData = new FormData();
+    formData.append('username', username)
+    formData.append('firstName', firstName)
+    formData.append('lastName', lastName)
+    formData.append('address', address)
+    formData.append('selectedState', selectedState)
+    formData.append('landmark', landmark)
+    formData.append('selectedCity', selectedCity)
+    formData.append('pincode', pincode)
+    formData.append('phoneNumber', phoneNumber)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/add_address`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      toast.success('Added Address Successfully')
+      await getUserAddress(username, dispatch)
+      showAddAddressModal(false)
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Unable to Add Address' + error)
+    }
+  }
+}
+
+export const getUserAddress = async (username, dispatch) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', username)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/get_address`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      dispatch(mainSliceActions.loggedUserAddress([...resResult?.address]));
+    }
+  } catch (error) {
+    if (error) {
+      toast.error(error)
+    }
+  }
+}
+
+export const editAddress = async (editData, showAddAddressModal, dispatch) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', editData.username)
+    formData.append('addressId', editData.addressId)
+    formData.append('firstName', editData.firstName)
+    formData.append('lastName', editData.lastName)
+    formData.append('address', editData.address)
+    formData.append('selectedState', editData.selectedState)
+    formData.append('landmark', editData.landmark)
+    formData.append('selectedCity', editData.selectedCity)
+    formData.append('pincode', editData.pincode)
+    formData.append('phoneNumber', editData.phoneNumber)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/edit_address`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      toast.success('Address Updated SuccessFully')
+      dispatch(mainSliceActions.loggedUserAddress([...resResult?.address]));
+      showAddAddressModal(false)
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Unable to Update Address' + error)
+    }
+  }
+}
+
+export const deleteAddress = async (editData, dispatch) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', editData.username)
+    formData.append('addressId', editData.addressId)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/delete_address`, {
+      method: 'DELETE',
+      headers: { 'authorization': `token ${token}` },
+      body: formData
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      toast.success('Address Deleted SuccessFully')
+      dispatch(mainSliceActions.loggedUserAddress([...resResult?.address]));
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Unable to Delete Address' + error)
+    }
+  }
+}
+
+//Code to Apply COUPONS
+export const verifyCoupon = async (couponCode) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const formData = new FormData();
+      formData.append('couponCode', couponCode)
+
+      const token = localStorage.getItem('token');
+
+      const response = await fetch(`${proxy}/verify_coupon`, {
+        method: 'POST',
+        headers: { 'authorization': `token ${token}` },
+        body: formData
+      })
+
+      let resResult;
+      await response.json().then((result) => (resResult = result));
+
+      if (!response.ok) {
+        throw resResult.message;
+      } else {
+        resolve(resResult)
+      }
+    } catch (error) {
+      if (error) {
+        reject(error)
+      }
+    }
+  })
+}
+
+//Place Order
+export const placeOrder = async (bookingDetails) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const formData = new FormData();
+      formData.append('username', bookingDetails.username)
+      formData.append('productId', bookingDetails.productId)
+      formData.append('shippingAddress', JSON.stringify(bookingDetails.shippingAddress))
+      formData.append('couponCode', bookingDetails.couponCode)
+      formData.append('couponDiscount', bookingDetails.couponDiscount)
+      formData.append('actualPrice', bookingDetails.actualPrice)
+      formData.append('discount', bookingDetails.discount)
+      formData.append('finalPrice', bookingDetails.finalPrice)
+      formData.append('paymentMode', bookingDetails.paymentMode)
+      formData.append('buyingQuantity', bookingDetails.buyingQuantity)
+
+      const token = localStorage.getItem('token');
+
+      const response = await fetch(`${proxy}/place_order`, {
+        method: 'POST',
+        headers: { 'authorization': `token ${token}` },
+        body: formData
+      })
+
+      let resResult;
+      await response.json().then((result) => (resResult = result));
+
+      if (!response.ok) {
+        throw resResult.message;
+      } else {
+        resolve(resResult)
+      }
+    } catch (error) {
+      if (error) {
+        reject(error)
+      }
+    }
+  })
+}
+
+//get Order Details 
+export const getOrderDetails = async (orderData) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', orderData.username)
+    formData.append('orderId', orderData.orderId)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/get_Order`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      return resResult.data
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Unable to get Order Details' + error)
+    }
+  }
+}
+
+//get All Orders
+export const getAllOrders = async (username) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', username)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/get_All_Orders`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      return resResult.data
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Unable to get Order Details ' + error)
+    }
+  }
+}
+
+//Cancel Order
+export const cancelOrder = async (orderData) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', orderData.username)
+    formData.append('orderId', orderData.orderId)
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/cancel_order`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData
+    })
+
+    let resResult;
+    await response.json().then((result) => (resResult = result));
+
+    if (!response.ok) {
+      throw resResult.message;
+    } else {
+      toast.success(resResult.message)
+      setTimeout(() => {
+        window.location.reload()
+      }, 2500)
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Unable to Cancel Order ' + error)
     }
   }
 }

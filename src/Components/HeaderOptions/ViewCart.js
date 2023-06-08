@@ -4,17 +4,22 @@ import Carousel from 'react-bootstrap/Carousel';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { getCartData, manageProductQuantity, removeProductFromCart } from '../../actions';
+import { mainSliceActions } from '../../Store/MainSlice';
 
 
 const ViewCart = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const [cartProducts, SetCartProducts] = useState([]);
 
     //user Data
     const userData = useSelector(state => state.mainSlice.userData)
+
+    //Login Status
+    const loginStatus = useSelector(state => state.mainSlice.loginStatus)
 
     const getcartData = async () => {
         SetCartProducts(await getCartData(userData.username))
@@ -45,7 +50,18 @@ const ViewCart = () => {
     }
 
     const handleProceedToCheckout = () => {
-        window.open('https://www.youtube.com/watch?v=YLF4sKkUzSQ&ab_channel=DhinchakPooja', '_blank')
+        const payload = []
+        cartProducts.map(product => payload.push(product._id))
+        dispatch(mainSliceActions.buyNow(payload))
+        navigate('/book_now')
+    }
+
+    const handleBuyNow = async (productId) => {
+        if (loginStatus) {
+            navigate(`/book_now/${productId}`)
+        } else {
+            navigate('/login')
+        }
     }
 
     return (
@@ -132,7 +148,7 @@ const ViewCart = () => {
                                         +
                                     </Button>
                                 </div>
-                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md'>Buy Now</Button></div>
+                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={() => handleBuyNow(product._id)} size='md'>Buy Now</Button></div>
                                 <div><Button style={{ backgroundColor: '#E5E5E5', color: 'black', width: '30vh' }} size='md' onClick={() => { removeProduct(product._id) }}>Remove from Cart</Button></div>
                             </div>
                         </div>

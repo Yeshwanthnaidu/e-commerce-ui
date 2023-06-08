@@ -15,9 +15,15 @@ import ViewProduct from "./Components/Product/ViewProduct.js";
 import ViewCart from "./Components/HeaderOptions/ViewCart.js";
 import ViewWishlist from "./Components/HeaderOptions/ViewWishlist.js";
 import SearchResult from "./Components/Search/SearchResult.js";
+import BookOrder from "./Components/Bookings/BookOrder.js";
+
+import OrderPlaced from "./Components/Bookings/OrderPlaced.js";
+
+import YourOrders from "./Components/Bookings/YourOrders.js";
 
 function App() {
   const loginStatus = useSelector(state => state.mainSlice.loginStatus)
+
   return (
     <div>
       <Header />
@@ -33,6 +39,9 @@ function App() {
         {loginStatus && <Route path="/my_ads" element={<MyAds />}></Route>}
         {loginStatus && <Route path='/show_cart' element={<ViewCart />}></Route>}
         {loginStatus && <Route path='/show_wishlist' element={<ViewWishlist />}></Route>}
+        {loginStatus && <Route path='/your_orders' element={<YourOrders />}></Route>}
+        {loginStatus && <Route path='/book_now/:id' element={<BookOrder />}></Route>}
+        {loginStatus && <Route path='/order_placed/:id' element={<OrderPlaced />}></Route>}
       </Routes>
       <Footer />
     </div>
