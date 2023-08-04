@@ -86,7 +86,7 @@ const BookOrder = () => {
     }
 
     return <>
-        {productData._id ?
+        {productData?._id ?
             <div style={{ backgroundColor: 'white', minHeight: '87vh' }}>
                 <div style={{ padding: '20px' }}>
                     <h4 style={{ fontWeight: '600' }}>Your Booking Details:</h4>

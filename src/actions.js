@@ -1,10 +1,7 @@
 import { toast } from "react-toastify";
 import { mainSliceActions } from "./Store/MainSlice";
 
-// export const proxy = process.env.REACT_APP_PROXY_HOME;
-export const proxy = 'http://10.0.4.180:8000'
-// export const proxy = 'http://172.30.144.1:8000' // process.env.REACT_APP_PROXY_OFFICE;
-
+export const proxy = process.env.NODE_ENV === 'development' ? `${process.env.REACT_APP_PROXY_HOME}/api/v1` : '/api/v1';
 // TOken Verification
 const parseJwt = (token) => {
   try {
