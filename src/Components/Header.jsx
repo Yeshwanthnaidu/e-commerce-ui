@@ -18,10 +18,10 @@ library.add(fas);
 
 import Logo from "../assets/logo.png";
 import { useDispatch, useSelector } from "react-redux";
-import { mainSliceActions } from "./../Store/MainSlice.js";
-import { getAllProducts } from "../actions";
+import { mainSliceActions } from "../Store/MainSlice.js";
+import { getAllProducts } from "../actions.js";
 
-import UserProfileModal from "./Auth/Modals/UserProfileModal";
+import UserProfileModal from "./Auth/Modals/UserProfileModal.jsx";
 
 
 function Header() {
@@ -279,13 +279,13 @@ function Header() {
                     Wish List
                   </Button>
                   <div className="dropdown-divider"></div>
-                  <a className="dropdown-item" href="#">
+                  <Button className="dropdown-item" onClick={() => { navigate('/cancelled_returned') }}>
                     <FontAwesomeIcon
                       icon="fa-solid fa-ban"
                       style={{ color: "red", marginRight: "5px" }}
                     />
                     Cancel/Return
-                  </a>
+                  </Button>
                   <div className="dropdown-divider"></div>
                   <a className="dropdown-item" href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=yeshwanth.ch.naidu@gmail.com" target='_blank'>
                     <FontAwesomeIcon icon="fa-solid fa-user-shield" style={{ marginRight: "5px" }} />

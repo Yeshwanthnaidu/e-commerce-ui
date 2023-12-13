@@ -884,10 +884,11 @@ export const getOrderDetails = async (orderData) => {
 }
 
 //get All Orders
-export const getAllOrders = async (username) => {
+export const getAllOrders = async (username, cancelled = false) => {
   try {
     const formData = new FormData();
     formData.append('username', username)
+    formData.append('getCancelled', cancelled)
 
     const token = localStorage.getItem('token');
 
