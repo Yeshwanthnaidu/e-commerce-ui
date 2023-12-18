@@ -21,6 +21,7 @@ import OrderPlaced from "./Components/Bookings/OrderPlaced.jsx";
 
 import YourOrders from "./Components/Bookings/YourOrders.jsx";
 import CancelledorReturnOrders from "./Components/Bookings/CancelledorReturnOrders.jsx";
+import CheckoutAllPage from "./Components/Bookings/CheckoutAllPage.jsx";
 
 function App() {
   const loginStatus = useSelector(state => state.mainSlice.loginStatus)
@@ -44,6 +45,7 @@ function App() {
         {loginStatus && <Route path='/book_now/:id' element={<BookOrder />}></Route>}
         {loginStatus && <Route path='/order_placed/:id' element={<OrderPlaced />}></Route>}
         {loginStatus && <Route path='/cancelled_returned' element={<CancelledorReturnOrders />}></Route>}
+        {loginStatus && <Route path='/checkout_page' element={<CheckoutAllPage />}></Route>}
       </Routes>
       <Footer />
     </div>

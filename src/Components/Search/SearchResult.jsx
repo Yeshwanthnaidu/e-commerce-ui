@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { getSearchData } from '../../actions';
+import { getSearchData, getImage } from '../../actions';
 
 const SearchResult = () => {
     const navigate = useNavigate()
@@ -37,7 +37,7 @@ const SearchResult = () => {
                                     {product.images.map(imgUrl => {
                                         return (
                                             <Carousel.Item onClick={() => { navigateToProduct(product._id) }} style={{ marginLeft: '30px' }}>
-                                                <Card.Img variant="top" src={imgUrl}
+                                                <Card.Img variant="top" src={getImage(imgUrl)}
                                                     style={{
                                                         width: '300px',
                                                         height: '200px',

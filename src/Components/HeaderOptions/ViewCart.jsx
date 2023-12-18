@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getCartData, manageProductQuantity, removeProductFromCart } from '../../actions';
+import { getCartData, manageProductQuantity, removeProductFromCart, getImage } from '../../actions';
 import { mainSliceActions } from '../../Store/MainSlice';
 
 
@@ -50,10 +50,11 @@ const ViewCart = () => {
     }
 
     const handleProceedToCheckout = () => {
-        const payload = []
-        cartProducts.map(product => payload.push(product._id))
-        dispatch(mainSliceActions.buyNow(payload))
-        navigate('/book_now')
+        // const payload = []
+        // cartProducts.map(product => payload.push(product._id))
+        // dispatch(mainSliceActions.buyNow(payload))
+        // navigate('/book_now')
+        navigate('/checkout_page')
     }
 
     const handleBuyNow = async (productId) => {
@@ -80,7 +81,7 @@ const ViewCart = () => {
                                     {product.images.map(imgUrl => {
                                         return (
                                             <Carousel.Item onClick={() => { navigateToProduct(product._id) }} style={{ marginLeft: '30px' }}>
-                                                <Card.Img variant="top" src={imgUrl}
+                                                <Card.Img variant="top" src={getImage(imgUrl)}
                                                     style={{
                                                         width: '300px',
                                                         height: '200px',

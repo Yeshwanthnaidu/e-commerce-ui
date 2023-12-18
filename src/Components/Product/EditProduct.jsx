@@ -5,7 +5,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { proxy } from "../../actions";
+import { getImage, proxy } from "../../actions";
 import notFoundImage from '../../assets/notfound.jpg';
 
 import { mainSliceActions } from "../../Store/MainSlice";
@@ -230,7 +230,7 @@ const EditProduct = (props) => {
                         <div>
                             {props.props.images.map((image, index) => {
                                 return (
-                                    <img src={image} id={index} alt="Previous Image"
+                                    <img src={getImage(image)} id={index} alt="Previous Image"
                                         width="150"
                                         style={{
                                             maxWidth: "100px",

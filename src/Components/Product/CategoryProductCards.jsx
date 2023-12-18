@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import { getAllProducts, proxy } from '../../actions';
+import { getAllProducts, proxy, getImage } from '../../actions';
 import notFoundImage from '../../assets/notfound.jpg'
 import { useNavigate } from 'react-router-dom';
 
@@ -40,7 +40,7 @@ const CategoryProductCards = (props) => {
                                         });
                                         return navigateToProduct(product._id)
                                     }}>
-                                        <Card.Img variant="top" src={imgUrl}
+                                        <Card.Img variant="top" src={getImage(imgUrl)}
                                             style={{
                                                 width: '300px',
                                                 height: '200px',

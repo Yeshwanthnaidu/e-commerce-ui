@@ -7,7 +7,7 @@ import { getProduct } from "../../actions";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "react-bootstrap";
 
-import { getUserAddress, verifyCoupon, placeOrder } from "../../actions";
+import { getUserAddress, verifyCoupon, placeOrder, getImage } from "../../actions";
 
 import AddUpdateAddressModal from "../Product/Modals/AddUpdateAddressModal";
 import { toast } from "react-toastify";
@@ -93,7 +93,7 @@ const BookOrder = () => {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                         <div>
                             <Card style={{ height: '60vh' }} >
-                                <img variant="top" src={productData.images[0]}
+                                <img variant="top" src={getImage(productData.images[0])}
                                     style={{
                                         width: '100%',
                                         display: 'block',

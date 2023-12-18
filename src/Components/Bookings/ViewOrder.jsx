@@ -1,7 +1,7 @@
 import { Button } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
 import moment from "moment/moment"
-import { cancelOrder } from "../../actions"
+import { cancelOrder, getImage, generateReceipt } from "../../actions"
 import { useSelector } from "react-redux"
 
 const ViewOrder = (props) => {
@@ -10,6 +10,10 @@ const ViewOrder = (props) => {
     const shippingAddress = JSON.parse(props?.props?.shippingAddress)
     const userData = useSelector(state => state.mainSlice.userData)
 
+    const handleDownloadReceipt = async (orderId) => {
+        await generateReceipt({username: userData.username, orderId })
+    }
+
     return (<>
         {props?.props?._id ?
             <div style={{ display: 'grid', gridTemplateColumns: '3fr 2fr' }}>
@@ -17,7 +21,7 @@ const ViewOrder = (props) => {
                     <div style={{ marginBottom: '10px' }}>Product Details:</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '2fr 3fr', gap: '30px' }}>
                         <div>
-                            <img variant="top" src={props?.props?.productImage}
+                            <img variant="top" src={getImage(props?.props?.productImage)}
                                 style={{
                                     display: 'block',
                                     height: '40vh',
@@ -104,7 +108,7 @@ const ViewOrder = (props) => {
                     </div>
                     <div style={{ display: 'flex', justifyContent: "center" }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '40%' }}>
-                            <Button variant="warning">Download Receipt</Button>
+                            <Button variant="warning" onClick={() => {handleDownloadReceipt(props?.props?._id)}}>Download Receipt</Button>
                             {!props?.props?.cancelled && <Button variant="danger" onClick={() => { cancelOrder({ username: userData.username, orderId: props?.props?._id }) }}>Cancel</Button>}
                             <Button variant="dark" onClick={() => { window.open(`https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=${props?.props?.sellerContact}`, '_blank') }}>Contact Seller</Button>
                         </div>

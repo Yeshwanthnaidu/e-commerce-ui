@@ -945,3 +945,89 @@ export const cancelOrder = async (orderData) => {
     }
   }
 }
+
+// get Image form Server
+export const getImage = (imageId) => {
+  let imageUrl = process.env.REACT_APP_PROXY + '/api/v1/get_image/' + imageId
+  return imageUrl
+}
+
+//Book all items in cart
+export const checkoutAllItems = async (orderData) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', orderData.username)
+    orderData.products.map(product => formData.append('products', JSON.stringify(product)))
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${proxy}/checkout_all`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData
+    })
+
+    if (response) {
+      toast.success('Booking Successfull')
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Unable to Checkout All ' + error)
+    }
+  }
+}
+
+// Generate Receipt
+export const generateReceipt = async (orderDetails) => {
+  try {
+    const formData = new FormData();
+    formData.append('username', orderDetails.username);
+    formData.append('orderId', orderDetails.orderId);
+
+    const token = localStorage.getItem('token');
+
+    const result = await fetch(`${proxy}/generate_receipt`, {
+      method: 'POST',
+      headers: { 'authorization': `token ${token}` },
+      body: formData,
+    });
+
+    if (result.ok) {
+      // Get the response as a blob
+      const blob = await result.blob();
+
+      // Create a link element
+      const link = document.createElement('a');
+
+      // Create a Blob URL for the blob
+      const blobUrl = URL.createObjectURL(blob);
+
+      // Set the link's href to the Blob URL
+      link.href = blobUrl;
+
+      // Set the link's download attribute to the desired file name
+      link.download = 'Order Receipt.pdf';
+
+      // Append the link to the document body
+      document.body.appendChild(link);
+
+      // Trigger a click on the link to start the download
+      link.click();
+
+      // Remove the link from the document
+      document.body.removeChild(link);
+
+      // Revoke the Blob URL to free up resources
+      URL.revokeObjectURL(blobUrl);
+
+      toast.success('Receipt Downloaded Successfully');
+    } else {
+      const res = await result.json()
+      throw 'Not Downloaded ' + res.message;
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Unable to Download Receipt ' + error);
+    }
+  }
+};

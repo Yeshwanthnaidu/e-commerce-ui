@@ -22,12 +22,14 @@ import { mainSliceActions } from "../Store/MainSlice.js";
 import { getAllProducts } from "../actions.js";
 
 import UserProfileModal from "./Auth/Modals/UserProfileModal.jsx";
+import TechnicianRequestModal from "./Modals/TechnicianRequestModal.jsx";
 
 
 function Header() {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [products, setProductData] = useState([]);
+  const [showTechnicianRequestModal, setShowTechnicianRequestModal] = useState(false);
   const showSearchOptions = useSelector((state) => state.mainSlice.showSearchOptions);
 
   const navigate = useNavigate();
@@ -201,10 +203,11 @@ function Header() {
             </Form>
             <div style={!loginStatus ? { marginLeft: '-12%' } : null}>
               <OverlayTrigger
-                delay={{ hide: 500, show: 300 }}
+                delay={{ hide: 100, show: 100 }}
                 placement="bottom"
-                overlay={renderTooltip}>
-                <Button style={{ display: 'flex', gap: '10px', alignItems: 'center' }} variant="dark">
+                overlay={renderTooltip}
+                >
+                <Button style={{ display: 'flex', gap: '10px', alignItems: 'center' }} variant="dark" onClick={() => setShowTechnicianRequestModal(true)}>
                   <FontAwesomeIcon icon={faScrewdriverWrench} />
                   Book a Technician
                 </Button>
@@ -341,6 +344,7 @@ function Header() {
         </Container>
       </Navbar>
       {showUserProfile && <UserProfileModal setShowUserProfile={setShowUserProfile} />}
+      {showTechnicianRequestModal && <TechnicianRequestModal setShowTechnicianRequestModal={setShowTechnicianRequestModal} />}
     </div>
   );
 }

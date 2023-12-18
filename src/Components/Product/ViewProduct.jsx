@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Carousel from 'react-bootstrap/Carousel';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getProduct, userRatingToProduct, addToCart, addProductToWishlist } from '../../actions';
+import { getProduct, userRatingToProduct, addToCart, addProductToWishlist, getImage } from '../../actions';
 import { mainSliceActions } from '../../Store/MainSlice';
 
 import notFOundImage from '../../assets/notfound.jpg'
@@ -89,7 +89,7 @@ const ViewProduct = () => {
                             {productData.images.map((imgUrl, index) => {
                                 return (
                                     <Carousel.Item key={index}>
-                                        <img variant="top" src={imgUrl}
+                                        <img variant="top" src={getImage(imgUrl)} onClick={() => {window.open(getImage(imgUrl), '_blank')}}
                                             style={{
                                                 width: '100%',
                                                 display: 'block',

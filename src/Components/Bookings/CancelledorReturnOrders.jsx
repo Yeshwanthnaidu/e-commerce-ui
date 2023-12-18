@@ -30,7 +30,7 @@ const CancelledorReturnOrders = () => {
                     </Card>
                 }) :
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '88.1vh', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '30px', fontWeight: '600' }}>No Orders Found &#128532;</span>
+                    <span style={{ fontSize: '30px', fontWeight: '600' }}>No Cancelled Orders Found</span>
                     <span style={{ color: 'blue', padding: '10px', cursor: 'pointer' }} onClick={() => { navigate('/') }}>Continue Shopping</span>
                 </div>}
         </div>

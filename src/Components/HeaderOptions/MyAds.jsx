@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import { getMyAds, proxy } from '../../actions';
+import { getMyAds, proxy, getImage } from '../../actions';
 import EditProduct from '../Product/EditProduct';
 import notFoundImage from '../../assets/notfound.jpg'
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +34,7 @@ function MyAds() {
                                 {product.images.map(imgUrl => {
                                     return (
                                         <Carousel.Item onClick={() => { navigateToProduct(product._id) }}>
-                                            <Card.Img variant="top" src={imgUrl}
+                                            <Card.Img variant="top" src={getImage(imgUrl)}
                                                 style={{
                                                     width: '300px',
                                                     height: '200px',

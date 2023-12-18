@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getWishlistData, addToCart, removeProductFromWishlist } from '../../actions';
+import { getWishlistData, addToCart, removeProductFromWishlist, getImage } from '../../actions';
 
 
 const ViewWishlist = () => {
@@ -70,7 +70,7 @@ const ViewWishlist = () => {
                                     {product.images.map(imgUrl => {
                                         return (
                                             <Carousel.Item onClick={() => { navigateToProduct(product._id) }} style={{ marginLeft: '30px' }}>
-                                                <Card.Img variant="top" src={imgUrl}
+                                                <Card.Img variant="top" src={getImage(imgUrl)}
                                                     style={{
                                                         width: '300px',
                                                         height: '200px',
