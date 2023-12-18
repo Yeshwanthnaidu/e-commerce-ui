@@ -25,10 +25,12 @@ import CheckoutAllPage from "./Components/Bookings/CheckoutAllPage.jsx";
 
 function App() {
   const loginStatus = useSelector(state => state.mainSlice.loginStatus)
+  const showLoadingPage = useSelector(state => state.mainSlice.showLoadingPage)
 
   return (
     <div>
       <Header />
+      {!!showLoadingPage && <SpinnerPage />}
       <Routes>
         <Route path="/" element={<Home />}></Route>
         <Route path="/forgot-username" element={<ForgotUsername />}></Route>

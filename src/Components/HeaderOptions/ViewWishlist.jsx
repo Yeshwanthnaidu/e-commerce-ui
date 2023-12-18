@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getWishlistData, addToCart, removeProductFromWishlist, getImage } from '../../actions';
+import { mainSliceActions } from '../../Store/MainSlice';
 
 
 const ViewWishlist = () => {
@@ -21,7 +22,13 @@ const ViewWishlist = () => {
     const userData = useSelector(state => state.mainSlice.userData)
 
     const setWishlistData = async () => {
-        SetWishlistProducts(await getWishlistData(userData.username))
+        try {
+            dispatch(mainSliceActions.showLoadingPage(true))
+            SetWishlistProducts(await getWishlistData(userData.username))
+            dispatch(mainSliceActions.showLoadingPage(false))
+        } catch (error) {
+            dispatch(mainSliceActions.showLoadingPage(false))
+        }
     }
 
     useEffect(() => {

@@ -20,6 +20,7 @@ const mainSlice = createSlice({
     userData: !!tokenVerification() ? tokenVerification() : {},
     showSearchOptions: false,
     userAddress: [],
+    showLoadingPage: false,
   },
   reducers: {
     loggedUserData(state, action) {
@@ -37,6 +38,9 @@ const mainSlice = createSlice({
     },
     loggedUserAddress(state, action) {
       state.userAddress = [...action.payload]
+    },
+    showLoadingPage(state, action) {
+      state.showLoadingPage = action.payload
     }
   },
 });

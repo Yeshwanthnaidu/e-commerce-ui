@@ -22,7 +22,13 @@ const ViewCart = () => {
     const loginStatus = useSelector(state => state.mainSlice.loginStatus)
 
     const getcartData = async () => {
-        SetCartProducts(await getCartData(userData.username))
+        try {
+            dispatch(mainSliceActions.showLoadingPage(true))
+            SetCartProducts(await getCartData(userData.username))
+            dispatch(mainSliceActions.showLoadingPage(false))
+        } catch (error) {
+            dispatch(mainSliceActions.showLoadingPage(false))
+        }
     }
 
     useEffect(() => {

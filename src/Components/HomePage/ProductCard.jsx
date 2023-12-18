@@ -7,14 +7,24 @@ import Card from 'react-bootstrap/Card';
 import { getAllProducts, proxy, getImage } from '../../actions';
 import notFoundImage from '../../assets/notfound.jpg'
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { mainSliceActions } from '../../Store/MainSlice';
 
 const ProductCard = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [productData, setProductData] = useState([]);
 
     useEffect(() => {
         const getProductData = async () => {
-            setProductData(await getAllProducts())
+            try {
+                dispatch(mainSliceActions.showLoadingPage(true));
+                setProductData(await getAllProducts());
+                dispatch(mainSliceActions.showLoadingPage(false));
+            } catch (error) {
+                console.error('Error fetching product data:', error);
+                dispatch(mainSliceActions.showLoadingPage(false));
+            }
         }
         getProductData();
     }, [])

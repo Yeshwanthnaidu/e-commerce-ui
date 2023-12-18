@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 function ConfirmationModal(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userData = useSelector(state => state.mainSlice.userData)
+  const userData = useSelector(state => state.mainSlice.userData);
 
   const PublishAd = () => {
     createProduct(props, props.setShowConfirmationModal, navigate, userData);

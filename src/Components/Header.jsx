@@ -174,7 +174,7 @@ function Header() {
                 marginRight: '10px',
                 width: '35px'
               }}
-                onClick={(e) => { e.preventDefault(), setSearchTerm('') }} >
+                onClick={(e) => { e.preventDefault(), setSearchTerm(''), navigate('/') }} >
                 X
               </button>
               {products && products.length && searchTerm !== '' && showSearchOptions ?

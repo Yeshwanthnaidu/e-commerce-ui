@@ -4,15 +4,24 @@ import Carousel from 'react-bootstrap/Carousel';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { getSearchData, getImage } from '../../actions';
+import { useDispatch } from 'react-redux';
+import { mainSliceActions } from '../../Store/MainSlice';
 
 const SearchResult = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const [searchProducts, SetSearchProducts] = useState([]);
 
     const { query } = useParams();
 
     const searchData = async () => {
-        SetSearchProducts(await getSearchData(query))
+        try {
+            dispatch(mainSliceActions.showLoadingPage(true))
+            SetSearchProducts(await getSearchData(query))
+            dispatch(mainSliceActions.showLoadingPage(false))
+        } catch (error) {
+            dispatch(mainSliceActions.showLoadingPage(false))
+        }
     }
 
     useEffect(() => {

@@ -11,6 +11,7 @@ import { getUserAddress, verifyCoupon, placeOrder, getImage } from "../../action
 
 import AddUpdateAddressModal from "../Product/Modals/AddUpdateAddressModal";
 import { toast } from "react-toastify";
+import { mainSliceActions } from "../../Store/MainSlice";
 
 const BookOrder = () => {
     const dispatch = useDispatch();
@@ -53,16 +54,19 @@ const BookOrder = () => {
 
     const applyCoupon = async () => {
         if ([null, undefined, ''].includes(couponCode?.trim())) return toast.error('Invalid Coupon Code')
+        dispatch(mainSliceActions.showLoadingPage(true))
         verifyCoupon(couponCode).then(res => {
             if (res.status === 'Success') {
                 setCouponDiscount(Number(res.discount))
                 setCouponMessage(res.message)
                 setCouponInvalid(false)
+                dispatch(mainSliceActions.showLoadingPage(false))
             }
         }).catch((err) => {
             setCouponDiscount(0)
             setCouponInvalid(true)
             setCouponMessage(err)
+            dispatch(mainSliceActions.showLoadingPage(false))
         })
     }
 
@@ -81,8 +85,8 @@ const BookOrder = () => {
             paymentMode: 'Cash On Delivery',
             buyingQuantity: buyingQuantity,
         };
-
-        await placeOrder(bookingDetails).then(res => { navigate(`/order_placed/${res.data}`) }).catch(err => { toast.error(err) })
+        dispatch(mainSliceActions.showLoadingPage(true))
+        await placeOrder(bookingDetails).then(res => { navigate(`/order_placed/${res.data}`), dispatch(mainSliceActions.showLoadingPage(false)) }).catch(err => { toast.error(err), dispatch(mainSliceActions.showLoadingPage(false)) })
     }
 
     return <>

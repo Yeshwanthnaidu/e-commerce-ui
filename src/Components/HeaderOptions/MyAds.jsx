@@ -6,16 +6,25 @@ import { getMyAds, proxy, getImage } from '../../actions';
 import EditProduct from '../Product/EditProduct';
 import notFoundImage from '../../assets/notfound.jpg'
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { mainSliceActions } from '../../Store/MainSlice';
 
 function MyAds() {
     const navigate = useNavigate()
+    const dispatch = useDispatch();
     const [adData, setAdData] = useState([]);
     const [editProductData, setEditProductData] = useState({});
     const [showEditProduct, setShowEditProduct] = useState(false);
 
     useEffect(() => {
         const getAdData = async () => {
-            setAdData(await getMyAds())
+            try {
+                dispatch(mainSliceActions.showLoadingPage(true))
+                setAdData(await getMyAds())
+                dispatch(mainSliceActions.showLoadingPage(false))
+            } catch (error) {
+                dispatch(mainSliceActions.showLoadingPage(false))
+            }
         }
         getAdData();
     }, [showEditProduct])

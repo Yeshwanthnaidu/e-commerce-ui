@@ -6,7 +6,6 @@ function Home() {
 
   return (
     <div style={{minHeight: '87.5vh'}}>
-      {/* {showSellingModal && <ProductSellingPage />} */}
       <DealsCarousel />
       <ProductCard />
     </div>

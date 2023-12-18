@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { getAllOrders } from "../../actions"
 import { Card } from "react-bootstrap"
 import ViewOrder from "./ViewOrder"
+import { mainSliceActions } from "../../Store/MainSlice"
 
 const YourOrders = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [orders, setOrders] = useState([])
     const userData = useSelector(state => state.mainSlice.userData)
 
     useEffect(() => {
         const getOrders = async () => {
-            setOrders(await getAllOrders(userData.username))
+            try {
+                dispatch(mainSliceActions.showLoadingPage(true))
+                setOrders(await getAllOrders(userData.username))
+                dispatch(mainSliceActions.showLoadingPage(false))
+            } catch (error) {
+                dispatch(mainSliceActions.showLoadingPage(false))
+            }
         }
         getOrders();
     }, [])
