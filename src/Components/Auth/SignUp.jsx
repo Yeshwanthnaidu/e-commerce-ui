@@ -48,10 +48,10 @@ function Signup() {
       callback: handleCallbackResponse,
     });
 
-    google.accounts.id.renderButton(document.getElementById("signUpDiv"), {
-      theme: "Outline",
-      size: "large",
-    });
+    // google.accounts.id.renderButton(document.getElementById("signUpDiv"), {
+    //   theme: "Outline",
+    //   size: "large",
+    // });
   }, []);
 
   const handleSubmit = (e) => {
@@ -152,7 +152,7 @@ function Signup() {
           >
             Already Registered?
           </button>
-          <div id="signUpDiv"></div>
+          {/* <div id="signUpDiv"></div> */}
         </div>
       </div>
     </div>

@@ -27,10 +27,10 @@ function SignIn() {
       callback: handleCallbackResponse,
     });
 
-    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
-      theme: "Outline",
-      size: "large",
-    });
+    // google.accounts.id.renderButton(document.getElementById("signInDiv"), {
+    //   theme: "Outline",
+    //   size: "large",
+    // });
   }, []);
 
   const clickedCreateNewAcc = () => {
@@ -111,7 +111,7 @@ function SignIn() {
           </button>
         </p>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <div id="signInDiv"></div>
+          { /* <div id="signInDiv"></div> */}
         </div>
       </div>
     </div>
