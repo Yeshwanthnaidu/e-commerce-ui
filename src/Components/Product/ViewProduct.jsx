@@ -4,10 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Carousel from 'react-bootstrap/Carousel';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getProduct, userRatingToProduct, addToCart, addProductToWishlist, getImage } from '../../actions';
+import { getProduct, userRatingToProduct, addToCart, addProductToWishlist } from '../../actions';
 import { mainSliceActions } from '../../Store/MainSlice';
 
-import notFOundImage from '../../assets/notfound.jpg'
 import oopsPageNotFound from '../../assets/oopsPageNotFound.jpg'
 import CategoryProductCards from './CategoryProductCards';
 
@@ -48,19 +47,26 @@ const ViewProduct = () => {
     }, [id, dispatch]);
 
     // user Rating
-    const handleRateProduct = () => {
-        const ratingData = { id: productData._id, starRating: rating, review, user: userData.name, username: userData.username }
-        if (loginStatus && rating != 0 && productData._id) {
-            userRatingToProduct(ratingData)
-            setRating(0);
-            setReview('');
+    const handleRateProduct = async () => {
+        try {
+            const ratingData = { id: productData.id, starRating: rating, review }
+            if (loginStatus && rating != 0 && productData.id) {
+                const res = await userRatingToProduct(ratingData)
+                if (res) {
+                    setRating(0);
+                    setReview('');
+                    setProductData({ ...productData, reviews: [...productData?.reviews, res] })
+                }
+            }
+        } catch (error) {
+            console.log('Error: ' + error)
         }
     }
 
     // Add to Cart
     const handleAddToCart = () => {
         if (loginStatus) {
-            const AddProduct = { id: productData._id, username: userData.username };
+            const AddProduct = { id: productData.id, username: userData.username };
             addToCart(AddProduct)
         } else {
             navigate('/login')
@@ -73,7 +79,7 @@ const ViewProduct = () => {
 
     const handleAddToWishlist = () => {
         if (loginStatus) {
-            const AddProduct = { id: productData._id, username: userData.username };
+            const AddProduct = { id: productData.id, username: userData.username };
             addProductToWishlist(AddProduct)
         } else {
             navigate('/login')
@@ -90,7 +96,7 @@ const ViewProduct = () => {
 
     return (
         <>
-            {productData?._id ?
+            {productData?.id ?
                 <div style={{ minHeight: '87.5vh', backgroundColor: 'white' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', padding: '25px' }}>
                         <div>
@@ -98,7 +104,7 @@ const ViewProduct = () => {
                                 {productData.images.map((imgUrl, index) => {
                                     return (
                                         <Carousel.Item key={index}>
-                                            <img variant="top" src={getImage(imgUrl)} onClick={() => { window.open(getImage(imgUrl), '_blank') }}
+                                            <img variant="top" src={imgUrl} onClick={() => { window.open(imgUrl, '_blank') }}
                                                 style={{
                                                     width: '100%',
                                                     display: 'block',
@@ -115,7 +121,7 @@ const ViewProduct = () => {
                         <div style={{ padding: '15px' }}>
                             <div style={{ margin: '20px' }}>
                                 <h3>
-                                    <b>{productData.product_name}</b>
+                                    <b>{productData.productName}</b>
                                 </h3>
                             </div>
                             <div style={{ margin: '20px' }}>
@@ -125,7 +131,7 @@ const ViewProduct = () => {
                                 <div>
                                     <div style={{ paddingTop: '20px' }}>
                                         <div style={{ backgroundColor: "#ADD8E6", padding: '5px', width: '180px', borderRadius: '10px', textAlign: 'center' }}>
-                                            Inventory Stock : {productData.inventory_stock}
+                                            Inventory Stock : {productData.inventoryStock}
                                         </div>
                                         <div style={{ backgroundColor: "#FFCCCB", padding: '5px', marginTop: '10px', width: '180px', borderRadius: '10px', textAlign: 'center' }}>
                                             Discount : {productData.discount}%
@@ -143,7 +149,7 @@ const ViewProduct = () => {
                                     <div className='TechSpecs' style={{ marginTop: '20px' }}>
                                         <h5><b>Technical Specifications:</b></h5>
                                         <div style={{ display: 'grid', gridTemplateColumns: '4fr 1fr 5fr' }}>
-                                            {JSON.parse(productData.techSpecifications[0]).map((spec, index) => {
+                                            {productData.techSpecifications.map((spec, index) => {
                                                 return (
                                                     <>
                                                         <h6>{spec.key}</h6>
@@ -195,10 +201,10 @@ const ViewProduct = () => {
                                     </>}
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
-                                    <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md' onClick={() => { handleBuyNow(productData._id) }}>Buy Now</Button></div>
+                                    <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md' onClick={() => { handleBuyNow(productData.id) }}>Buy Now</Button></div>
                                     <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={handleAddToCart} size='md'>Add to Cart</Button></div>
                                     <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={handleAddToWishlist} size='md'>Add to Wishlist</Button></div>
-                                    <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={() => { contactSellerBtnClicked(productData.SellerContact) }} size='md'>Contact Seller</Button></div>
+                                    <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={() => { contactSellerBtnClicked(productData.sellerContact) }} size='md'>Contact Seller</Button></div>
                                 </div>
                             </div>
                         </div>
@@ -219,7 +225,7 @@ const ViewProduct = () => {
                                                     <div>
                                                         {[...Array(5)].map((star, index) => {
                                                             return (
-                                                                <span key={index} style={{ color: Math.abs(Number(review.starRating)) >= index + 1 ? 'RED' : 'grey', fontSize: '30px' }}>&#9733;</span>
+                                                                <span key={index} style={{ color: Math.abs(Number(review.rating)) >= index + 1 ? 'RED' : 'grey', fontSize: '30px' }}>&#9733;</span>
                                                             );
                                                         })}
                                                     </div>
@@ -231,7 +237,6 @@ const ViewProduct = () => {
                                         <b>No Reviews Yet</b>
                                     </div>
                                 }
-
                             </div>
                         </div>
                     </div>
@@ -240,7 +245,7 @@ const ViewProduct = () => {
                             <b>Suggessted Products</b>
                         </div>
                         <>
-                            <CategoryProductCards category={productData.product_type} />
+                            <CategoryProductCards category={productData.productType} />
                         </>
                     </div>
                 </div> : <></>}

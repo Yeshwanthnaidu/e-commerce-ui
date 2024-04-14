@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getCartData, manageProductQuantity, removeProductFromCart, getImage } from '../../actions';
+import { getCartData, manageProductQuantity, removeProductFromCart } from '../../actions';
 import { mainSliceActions } from '../../Store/MainSlice';
 
 
@@ -39,14 +39,9 @@ const ViewCart = () => {
         navigate(`/view_product/${id}`)
     }
 
-    const increaseProductQuantity = async (productId) => {
-        const productData = { productId, username: userData.username, update: 1 };
-        await manageProductQuantity(productData)
-    }
-
-    const decreaseProductQuantity = async (productId) => {
-        const productData = { productId, username: userData.username, update: -1 };
-        await manageProductQuantity(productData)
+    const handleProductQuantity = async (productId, productQuantity) => {
+        const productData = { productId, update: productQuantity };
+        manageProductQuantity(productData)
     }
 
     const removeProduct = async (productId) => {
@@ -56,10 +51,6 @@ const ViewCart = () => {
     }
 
     const handleProceedToCheckout = () => {
-        // const payload = []
-        // cartProducts.map(product => payload.push(product._id))
-        // dispatch(mainSliceActions.buyNow(payload))
-        // navigate('/book_now')
         navigate('/checkout_page')
     }
 
@@ -82,12 +73,12 @@ const ViewCart = () => {
                 cartProducts.map((product, index) => {
                     return <Card>
                         <div className="row no-gutters">
-                            <div className="col-md-3" onClick={() => { navigateToProduct(product._id) }}>
+                            <div className="col-md-3" onClick={() => { navigateToProduct(product.id) }}>
                                 <Carousel fade>
                                     {product.images.map(imgUrl => {
                                         return (
-                                            <Carousel.Item onClick={() => { navigateToProduct(product._id) }} style={{ marginLeft: '30px' }}>
-                                                <Card.Img variant="top" src={getImage(imgUrl)}
+                                            <Carousel.Item onClick={() => { navigateToProduct(product.id) }} style={{ marginLeft: '30px' }}>
+                                                <Card.Img variant="top" src={imgUrl}
                                                     style={{
                                                         width: '300px',
                                                         height: '200px',
@@ -100,9 +91,9 @@ const ViewCart = () => {
                                     })}
                                 </Carousel>
                             </div>
-                            <div className="col-md-6" onClick={() => { navigateToProduct(product._id) }}>
+                            <div className="col-md-6" onClick={() => { navigateToProduct(product.id) }}>
                                 <Card.Body>
-                                    <Card.Title>{product.product_name}</Card.Title>
+                                    <Card.Title>{product.productName}</Card.Title>
                                     <Card.Text>{product.description}</Card.Text>
                                     <Card.Text style={{ color: 'red', fontWeight: '1000' }}>Flat {product.discount}% Discount</Card.Text>
                                     <Card.Text id={`productPrice${index}`} style={{ fontWeight: '600' }}>
@@ -122,7 +113,7 @@ const ViewCart = () => {
                                             if (currentQuantity > 1) {
                                                 inputElement.value = currentQuantity - 1;
                                                 productPrice.innerHTML = `Special Price: &#8377; ${(Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))) * inputElement.value} <s style={{ fontSize: '12px' }}>${product.price * inputElement.value}</s>`
-                                                decreaseProductQuantity(product._id)
+                                                handleProductQuantity(product.id, currentQuantity - 1)
                                             } else {
                                                 toast.error("Can't be 0");
                                             }
@@ -146,7 +137,7 @@ const ViewCart = () => {
                                             if (currentQuantity < 5) {
                                                 inputElement.value = currentQuantity + 1;
                                                 productPrice.innerHTML = `Special Price: &#8377; ${(Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))) * inputElement.value} <s style={{ fontSize: '12px' }}>${product.price * inputElement.value}</s>`
-                                                increaseProductQuantity(product._id)
+                                                handleProductQuantity(product.id, currentQuantity + 1)
                                             } else {
                                                 toast.error("Can't set more than 5");
                                             }
@@ -155,8 +146,8 @@ const ViewCart = () => {
                                         +
                                     </Button>
                                 </div>
-                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={() => handleBuyNow(product._id)} size='md'>Buy Now</Button></div>
-                                <div><Button style={{ backgroundColor: '#E5E5E5', color: 'black', width: '30vh' }} size='md' onClick={() => { removeProduct(product._id) }}>Remove from Cart</Button></div>
+                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} onClick={() => handleBuyNow(product.id)} size='md'>Buy Now</Button></div>
+                                <div><Button style={{ backgroundColor: '#E5E5E5', color: 'black', width: '30vh' }} size='md' onClick={() => { removeProduct(product.id) }}>Remove from Cart</Button></div>
                             </div>
                         </div>
                     </Card>

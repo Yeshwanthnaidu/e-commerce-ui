@@ -15,7 +15,7 @@ const OrderPlaced = () => {
 
     useEffect(() => {
         const orderDetails = async () => {
-            setOrderData(await getOrderDetails({ username: userData.username, orderId: id }))
+            setOrderData(await getOrderDetails({ orderId: id }))
         }
         orderDetails()
     }, [id])
@@ -37,7 +37,7 @@ const OrderPlaced = () => {
                             <u>Order Details:</u>
                         </div>
                         <div>
-                            {orderData?._id && <ViewOrder props={orderData} />}
+                            {orderData?.id && <ViewOrder props={orderData} />}
                         </div>
                     </Card.Body>
                 </Card>

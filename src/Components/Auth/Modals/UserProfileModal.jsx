@@ -25,10 +25,10 @@ function UserProfileModal(props) {
   const [EditAddressData, setEditAddressData] = useState({})
 
   const userData = useSelector(state => state.mainSlice.userData)
-  const userAddress = useSelector(state => state.mainSlice.userAddress)
+  let userAddress = useSelector(state => state.mainSlice.userAddress);
 
   useEffect(() => {
-    getUserAddress(userData.username, dispatch)
+    getUserAddress(dispatch)
   }, [])
 
   const ChangeBtnClicked = () => {
@@ -36,8 +36,9 @@ function UserProfileModal(props) {
     changePassword(data).then(res => res?.status === 'Success' ? setShowChangePassword(false) : null).catch((error) => { console.error(error) })
   };
 
-  const handleAddressRemoveBtn = (addressId) => {
-    deleteAddress({ username: userData.username, addressId }, dispatch)
+  const handleAddressRemoveBtn = async (addressId) => {
+    const confirmed = confirm('are you sure you want to Delete?');
+    if (confirmed) deleteAddress({ addressId }, dispatch)
   }
 
   return (
@@ -84,14 +85,14 @@ function UserProfileModal(props) {
                       <Card.Body style={{ display: 'grid', gridTemplateColumns: '15fr 1fr 1fr' }}>
                         <div className="d-flex" style={{ flexDirection: 'column', fontSize: '13px' }}>
                           <span style={{ fontSize: '15px', fontWeight: '600' }}>{address.firstName + ' ' + address.lastName}</span>
-                          <span>{address.address} - {address.selectedCity}</span>
-                          <span>{address.selectedState} - {address.pincode}</span>
+                          <span>{address.address} - {address.city}</span>
+                          <span>{address.state} - {address.pincode}</span>
                           <span>LandMark: {address.landmark}</span>
                           <span>Contact: {address.phoneNumber}</span>
                         </div>
                         <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
                           <Button variant='warning' style={{ width: '40px' }} onClick={() => { setShowAddAddressModal(true), setEditAddressData(address) }}><FontAwesomeIcon icon={faFilePen} /></Button>
-                          <Button variant="danger" style={{ width: '40px' }} onClick={() => { handleAddressRemoveBtn(address?._id) }}>X</Button>
+                          <Button variant="danger" style={{ width: '40px' }} onClick={() => { handleAddressRemoveBtn(address?.id) }}>X</Button>
                         </div>
                       </Card.Body>
                     </Card>

@@ -8,10 +8,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import check_solid from '../../assets/check_solid.svg'
 
-import { getUserAddress, verifyCoupon, placeOrder, getImage, getCartData, checkoutAllItems } from "../../actions";
+import { getUserAddress, verifyCoupon, placeOrder, getCartData, checkoutAllItems } from "../../actions";
 
 import AddUpdateAddressModal from "../Product/Modals/AddUpdateAddressModal";
 import { toast } from "react-toastify";
+import { mainSliceActions } from "../../Store/MainSlice";
 
 const CheckoutAllPage = () => {
     const dispatch = useDispatch();
@@ -32,11 +33,13 @@ const CheckoutAllPage = () => {
     const [couponMessage, setCouponMessage] = useState('')
 
     const getcartData = async () => {
+        dispatch(mainSliceActions.showLoadingPage(true))
         setCartData(await getCartData(userData.username))
+        dispatch(mainSliceActions.showLoadingPage(false))
     }
 
     useEffect(() => {
-        getUserAddress(userData.username, dispatch);
+        getUserAddress(dispatch);
         getcartData();
     }, [])
 
@@ -53,43 +56,46 @@ const CheckoutAllPage = () => {
 
     const applyCoupon = async () => {
         if ([null, undefined, ''].includes(couponCode?.trim())) return toast.error('Invalid Coupon Code')
+        dispatch(mainSliceActions.showLoadingPage(true))
         verifyCoupon(couponCode).then(res => {
-            if (res.status === 'Success') {
+            if (res?.discount) {
                 setCouponDiscount(Number(res.discount))
                 setCouponMessage(res.message)
                 setCouponInvalid(false)
+                dispatch(mainSliceActions.showLoadingPage(false))
             }
         }).catch((err) => {
             setCouponDiscount(0)
             setCouponInvalid(true)
             setCouponMessage(err)
+            dispatch(mainSliceActions.showLoadingPage(false))
         })
     }
 
     const handlePlaceOrder = async () => {
         //generate Product Data
+        dispatch(mainSliceActions.showLoadingPage(true))
         const cartPayloadData = cartData.map(productData => {
             const bookingDetails = {
-                username: userData.username,
-                productId: productData._id,
-                shippingAddress: JSON.stringify(selectedAddress),
+                productId: productData.id,
+                shippingAddressId: selectedAddress.id,
                 couponCode: couponCode || '',
-                couponDiscount: (((productData.price - ((productData.price / 100) * productData.discount)) / 100) * couponDiscount) * productData.quantity,
-                actualPrice: productData.price * productData.quantity,
-                discount: productData.discount * productData.quantity,
-                finalPrice: (productData.price - (((productData.price / 100) * productData.discount) + (((productData.price - ((productData.price / 100) * productData.discount)) / 100) * couponDiscount))) * productData.quantity,
                 paymentMode: 'Cash On Delivery',
                 buyingQuantity: productData.quantity,
             };
-
             return bookingDetails
         })
-        await checkoutAllItems({ username: userData.username, products: cartPayloadData }).then(() => {
-            setShowOrderPlacedMessage(true);
-            setTimeout(() => {
-                { navigate(`/your_orders`) }
-            }, 3000)
+        await checkoutAllItems({ username: userData.username, products: cartPayloadData }).then((res) => {
+            if (res) {
+                setShowOrderPlacedMessage(true);
+                setTimeout(() => {
+                    { navigate(`/your_orders`) }
+                }, 1000)
+            }
+        }).catch(err => {
+            console.log('Error: ' + err)
         })
+        dispatch(mainSliceActions.showLoadingPage(false))
     }
 
     const priceAfterDiscount = (cartData.reduce((accumulator, product) => { return accumulator + product.price * product.quantity }, 0)) - cartData.reduce((accumulator, product) => { return accumulator + ((product.price / 100 * product.discount)) * product.quantity }, 0);
@@ -107,7 +113,7 @@ const CheckoutAllPage = () => {
                                         <Card.Body>
                                             <div className="d-grid" style={{ gridTemplateColumns: '1fr 2fr' }}>
                                                 <div>
-                                                    <img variant="top" src={getImage(product.images[0])}
+                                                    <img variant="top" src={product.images[0]}
                                                         style={{
                                                             width: '100%',
                                                             display: 'block',
@@ -239,8 +245,8 @@ const CheckoutAllPage = () => {
                                         {selectedAddress?.firstName ?
                                             <div className="d-flex" style={{ flexDirection: 'column', paddingBottom: '10px' }}>
                                                 <span style={{ fontSize: '18px', fontWeight: '600' }}>{selectedAddress.firstName + ' ' + selectedAddress.lastName}</span>
-                                                <span>{selectedAddress.address} - {selectedAddress.selectedCity}</span>
-                                                <span>{selectedAddress.selectedState} - {selectedAddress.pincode}</span>
+                                                <span>{selectedAddress.address} - {selectedAddress.city}</span>
+                                                <span>{selectedAddress.state} - {selectedAddress.pincode}</span>
                                                 <span>LandMark: {selectedAddress.landmark}</span>
                                                 <span>Contact: {selectedAddress.phoneNumber}</span>
                                             </div>
@@ -262,8 +268,8 @@ const CheckoutAllPage = () => {
                                                                     <Dropdown.Item eventKey={index} key={index}>
                                                                         <div className="d-flex" style={{ flexDirection: 'column' }}>
                                                                             <span style={{ fontSize: '18px', fontWeight: '600' }}>{address.firstName + ' ' + address.lastName}</span>
-                                                                            <span>{address.address} - {address.selectedCity}</span>
-                                                                            <span>{address.selectedState} - {address.pincode}</span>
+                                                                            <span>{address.address} - {address.city}</span>
+                                                                            <span>{address.state} - {address.pincode}</span>
                                                                             <span>LandMark: {address.landmark}</span>
                                                                             <span>Contact: {address.phoneNumber}</span>
                                                                         </div>

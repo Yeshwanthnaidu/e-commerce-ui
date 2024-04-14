@@ -9,7 +9,6 @@ function EditConfirmationModal(props) {
 
     const updateAd = () => {
         editProduct(props.props, props.setShowEditConfirmationModal, props.setShowEditProduct, navigate)
-        console.log(props)
     };
 
     return (

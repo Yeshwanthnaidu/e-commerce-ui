@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { getSearchData, getImage } from '../../actions';
+import { getSearchData } from '../../actions';
 import { useDispatch } from 'react-redux';
 import { mainSliceActions } from '../../Store/MainSlice';
 
@@ -41,12 +41,12 @@ const SearchResult = () => {
                 searchProducts.map((product, index) => {
                     return <Card>
                         <div className="row no-gutters">
-                            <div className="col-md-3" onClick={() => { navigateToProduct(product._id) }}>
+                            <div className="col-md-3" onClick={() => { navigateToProduct(product.id) }}>
                                 <Carousel fade>
                                     {product.images.map(imgUrl => {
                                         return (
-                                            <Carousel.Item onClick={() => { navigateToProduct(product._id) }} style={{ marginLeft: '30px' }}>
-                                                <Card.Img variant="top" src={getImage(imgUrl)}
+                                            <Carousel.Item onClick={() => { navigateToProduct(product.id) }} style={{ marginLeft: '30px' }}>
+                                                <Card.Img variant="top" src={imgUrl}
                                                     style={{
                                                         width: '300px',
                                                         height: '200px',
@@ -59,9 +59,9 @@ const SearchResult = () => {
                                     })}
                                 </Carousel>
                             </div>
-                            <div className="col-md-8" onClick={() => { navigateToProduct(product._id) }}>
+                            <div className="col-md-8" onClick={() => { navigateToProduct(product.id) }}>
                                 <Card.Body>
-                                    <Card.Title>{product.product_name}</Card.Title>
+                                    <Card.Title>{product.productName}</Card.Title>
                                     <Card.Text>{product.description}</Card.Text>
                                     <Card.Text style={{ color: 'red', fontWeight: '1000' }}>Flat {product.discount}% Discount</Card.Text>
                                     <Card.Text id={`productPrice${index}`} style={{ fontWeight: '600' }}>

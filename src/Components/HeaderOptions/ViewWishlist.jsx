@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getWishlistData, addToCart, removeProductFromWishlist, getImage } from '../../actions';
+import { getWishlistData, addToCart, removeProductFromWishlist } from '../../actions';
 import { mainSliceActions } from '../../Store/MainSlice';
 
 
@@ -24,7 +24,7 @@ const ViewWishlist = () => {
     const setWishlistData = async () => {
         try {
             dispatch(mainSliceActions.showLoadingPage(true))
-            SetWishlistProducts(await getWishlistData(userData.username))
+            SetWishlistProducts(await getWishlistData())
             dispatch(mainSliceActions.showLoadingPage(false))
         } catch (error) {
             dispatch(mainSliceActions.showLoadingPage(false))
@@ -72,12 +72,12 @@ const ViewWishlist = () => {
                 wishlistProducts.map((product, index) => {
                     return <Card>
                         <div className="row no-gutters">
-                            <div className="col-md-3" onClick={() => { navigateToProduct(product._id) }}>
+                            <div className="col-md-3" onClick={() => { navigateToProduct(product.id) }}>
                                 <Carousel fade>
                                     {product.images.map(imgUrl => {
                                         return (
-                                            <Carousel.Item onClick={() => { navigateToProduct(product._id) }} style={{ marginLeft: '30px' }}>
-                                                <Card.Img variant="top" src={getImage(imgUrl)}
+                                            <Carousel.Item onClick={() => { navigateToProduct(product.id) }} style={{ marginLeft: '30px' }}>
+                                                <Card.Img variant="top" src={imgUrl}
                                                     style={{
                                                         width: '300px',
                                                         height: '200px',
@@ -90,18 +90,18 @@ const ViewWishlist = () => {
                                     })}
                                 </Carousel>
                             </div>
-                            <div className="col-md-6" onClick={() => { navigateToProduct(product._id) }}>
+                            <div className="col-md-6" onClick={() => { navigateToProduct(product.id) }}>
                                 <Card.Body>
-                                    <Card.Title>{product.product_name}</Card.Title>
+                                    <Card.Title>{product.productName}</Card.Title>
                                     <Card.Text>{product.description}</Card.Text>
                                     <Card.Text style={{ color: 'red', fontWeight: '1000' }}>Flat {product.discount}% Discount</Card.Text>
                                     <Card.Text style={{ fontWeight: '600' }}>Special Price: &#8377; {Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))} <s style={{ fontSize: '12px' }}>{product.price}</s></Card.Text>
                                 </Card.Body>
                             </div>
                             <div className="col-md-3" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly' }}>
-                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md' onClick={() => { handleBuyNow(product._id) }}>Buy Now</Button></div>
-                                <div><Button style={{ backgroundColor: '#E5E5E5', color: 'black', width: '30vh' }} size='md' onClick={() => { handleAddToCart(product._id) }}>Add to Cart</Button></div>
-                                <div><Button style={{ backgroundColor: '#E5E5E5', color: 'black', width: '30vh' }} size='md' onClick={() => { handleRemoveFromWIshlist(product._id) }}>Remove From WishList</Button></div>
+                                <div><Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh' }} size='md' onClick={() => { handleBuyNow(product.id) }}>Buy Now</Button></div>
+                                <div><Button style={{ backgroundColor: '#E5E5E5', color: 'black', width: '30vh' }} size='md' onClick={() => { handleAddToCart(product.id) }}>Add to Cart</Button></div>
+                                <div><Button style={{ backgroundColor: '#E5E5E5', color: 'black', width: '30vh' }} size='md' onClick={() => { handleRemoveFromWIshlist(product.id) }}>Remove From WishList</Button></div>
                             </div>
                         </div>
                     </Card>

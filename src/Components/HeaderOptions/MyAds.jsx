@@ -1,10 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import { getMyAds, proxy, getImage } from '../../actions';
+import { getMyAds } from '../../actions';
 import EditProduct from '../Product/EditProduct';
-import notFoundImage from '../../assets/notfound.jpg'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { mainSliceActions } from '../../Store/MainSlice';
@@ -40,10 +39,10 @@ function MyAds() {
                     return (
                         <Card style={{ width: '18rem', marginTop: '10px' }} key={index}>
                             <Carousel fade>
-                                {product.images.map(imgUrl => {
+                                {product.images.map((imgUrl, index) => {
                                     return (
-                                        <Carousel.Item onClick={() => { navigateToProduct(product._id) }}>
-                                            <Card.Img variant="top" src={getImage(imgUrl)}
+                                        <Carousel.Item onClick={() => { navigateToProduct(product.id) }} key={index}>
+                                            <Card.Img variant="top" src={imgUrl}
                                                 style={{
                                                     width: '300px',
                                                     height: '200px',
@@ -55,9 +54,9 @@ function MyAds() {
                                     )
                                 })}
                             </Carousel>
-                            <Card.Body onClick={() => { navigateToProduct(product._id) }} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                            <Card.Body onClick={() => { navigateToProduct(product.id) }} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                 <div style={{ marginBottom: '10px' }}>
-                                    <Card.Title>{product.product_name}</Card.Title>
+                                    <Card.Title>{product.productName}</Card.Title>
                                     <Card.Text>{product.description}</Card.Text>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', }}>
@@ -66,14 +65,14 @@ function MyAds() {
                                 </div>
                             </Card.Body>
                             <div style={{ display: 'flex', gap: '10px', margin: '10px' }}>
-                                <Button onClick={() => { navigateToProduct(product._id) }}>View</Button>
+                                <Button onClick={() => { navigateToProduct(product.id) }}>View</Button>
                                 <Button onClick={() => { setEditProductData(product), setShowEditProduct(true) }}>Edit</Button>
                             </div>
                         </Card>
                     )
                 })}
             </div>
-            {showEditProduct && <EditProduct props={{ ...editProductData }} setShowEditProduct={setShowEditProduct} />}
+            {showEditProduct && <EditProduct id={editProductData.id} setShowEditProduct={setShowEditProduct} />}
         </div>
     )
 

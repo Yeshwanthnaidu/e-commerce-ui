@@ -7,7 +7,7 @@ import { getProduct } from "../../actions";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "react-bootstrap";
 
-import { getUserAddress, verifyCoupon, placeOrder, getImage } from "../../actions";
+import { getUserAddress, verifyCoupon, placeOrder } from "../../actions";
 
 import AddUpdateAddressModal from "../Product/Modals/AddUpdateAddressModal";
 import { toast } from "react-toastify";
@@ -38,7 +38,7 @@ const BookOrder = () => {
             setProductData(await getProduct(id))
         }
         getProductData(id)
-        getUserAddress(userData.username, dispatch)
+        getUserAddress(dispatch)
     }, [id])
 
     useEffect(() => {
@@ -56,16 +56,17 @@ const BookOrder = () => {
         if ([null, undefined, ''].includes(couponCode?.trim())) return toast.error('Invalid Coupon Code')
         dispatch(mainSliceActions.showLoadingPage(true))
         verifyCoupon(couponCode).then(res => {
-            if (res.status === 'Success') {
+            if (res?.discount) {
                 setCouponDiscount(Number(res.discount))
                 setCouponMessage(res.message)
                 setCouponInvalid(false)
                 dispatch(mainSliceActions.showLoadingPage(false))
             }
         }).catch((err) => {
+            console.log(err)
             setCouponDiscount(0)
             setCouponInvalid(true)
-            setCouponMessage(err)
+            if (err?.response?.data?.message) setCouponMessage(String(err.response.data.message))
             dispatch(mainSliceActions.showLoadingPage(false))
         })
     }
@@ -74,30 +75,30 @@ const BookOrder = () => {
         if (!userData.username) return toast.error('Invalid User Details');
         if (!selectedAddress?.firstName) return toast.error('Please Select Address')
         const bookingDetails = {
-            username: userData.username,
-            productId: productData._id,
-            shippingAddress: selectedAddress,
+            productId: productData.id,
+            shippingAddressId: selectedAddress.id,
             couponCode: couponCode || '',
-            couponDiscount: (((productData.price - ((productData.price / 100) * productData.discount)) / 100) * couponDiscount) * buyingQuantity,
-            actualPrice: productData.price * buyingQuantity,
-            discount: productData.discount * buyingQuantity,
-            finalPrice: (productData.price - (((productData.price / 100) * productData.discount) + (((productData.price - ((productData.price / 100) * productData.discount)) / 100) * couponDiscount))) * buyingQuantity,
             paymentMode: 'Cash On Delivery',
             buyingQuantity: buyingQuantity,
         };
         dispatch(mainSliceActions.showLoadingPage(true))
-        await placeOrder(bookingDetails).then(res => { navigate(`/order_placed/${res.data}`), dispatch(mainSliceActions.showLoadingPage(false)) }).catch(err => { toast.error(err), dispatch(mainSliceActions.showLoadingPage(false)) })
+        await placeOrder(bookingDetails).then(res => {
+            if (res) {
+                navigate(`/order_placed/${res.id}`);
+                dispatch(mainSliceActions.showLoadingPage(false))
+            }
+        }).catch(err => { dispatch(mainSliceActions.showLoadingPage(false)) })
     }
 
     return <>
-        {productData?._id ?
+        {productData?.id ?
             <div style={{ backgroundColor: 'white', minHeight: '87vh' }}>
                 <div style={{ padding: '20px' }}>
                     <h4 style={{ fontWeight: '600' }}>Your Booking Details:</h4>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                         <div>
                             <Card style={{ height: '60vh' }} >
-                                <img variant="top" src={getImage(productData.images[0])}
+                                <img variant="top" src={productData.images[0]}
                                     style={{
                                         width: '100%',
                                         display: 'block',
@@ -107,7 +108,7 @@ const BookOrder = () => {
                                         objectFit: 'contain'
                                     }} />
                                 <Card.Body>
-                                    <Card.Title>{productData.product_name}</Card.Title>
+                                    <Card.Title>{productData.productName}</Card.Title>
                                     <Card.Text>
                                         {productData.description}
                                     </Card.Text>
@@ -209,8 +210,8 @@ const BookOrder = () => {
                                     {selectedAddress?.firstName ?
                                         <div className="d-flex" style={{ flexDirection: 'column', paddingBottom: '10px' }}>
                                             <span style={{ fontSize: '18px', fontWeight: '600' }}>{selectedAddress.firstName + ' ' + selectedAddress.lastName}</span>
-                                            <span>{selectedAddress.address} - {selectedAddress.selectedCity}</span>
-                                            <span>{selectedAddress.selectedState} - {selectedAddress.pincode}</span>
+                                            <span>{selectedAddress.address} - {selectedAddress.city}</span>
+                                            <span>{selectedAddress.state} - {selectedAddress.pincode}</span>
                                             <span>LandMark: {selectedAddress.landmark}</span>
                                             <span>Contact: {selectedAddress.phoneNumber}</span>
                                         </div>
@@ -232,8 +233,8 @@ const BookOrder = () => {
                                                                 <Dropdown.Item eventKey={index} key={index}>
                                                                     <div className="d-flex" style={{ flexDirection: 'column' }}>
                                                                         <span style={{ fontSize: '18px', fontWeight: '600' }}>{address.firstName + ' ' + address.lastName}</span>
-                                                                        <span>{address.address} - {address.selectedCity}</span>
-                                                                        <span>{address.selectedState} - {address.pincode}</span>
+                                                                        <span>{address.address} - {address.city}</span>
+                                                                        <span>{address.state} - {address.pincode}</span>
                                                                         <span>LandMark: {address.landmark}</span>
                                                                         <span>Contact: {address.phoneNumber}</span>
                                                                     </div>

@@ -17,7 +17,7 @@ function TechnicianRequestModal(props) {
 
     useEffect(() => {
         setRequestedTech(false)
-        getUserAddress(userData.username, dispatch)
+        getUserAddress(dispatch)
     }, [])
 
     useEffect(() => {
@@ -64,8 +64,8 @@ function TechnicianRequestModal(props) {
                                     {selectedAddress?.firstName ?
                                         <div className="d-flex" style={{ flexDirection: 'column', paddingBottom: '10px' }}>
                                             <span style={{ fontSize: '18px', fontWeight: '600' }}>{selectedAddress.firstName + ' ' + selectedAddress.lastName}</span>
-                                            <span>{selectedAddress.address} - {selectedAddress.selectedCity}</span>
-                                            <span>{selectedAddress.selectedState} - {selectedAddress.pincode}</span>
+                                            <span>{selectedAddress.address} - {selectedAddress.city}</span>
+                                            <span>{selectedAddress.state} - {selectedAddress.pincode}</span>
                                             <span>LandMark: {selectedAddress.landmark}</span>
                                             <span>Contact: {selectedAddress.phoneNumber}</span>
                                         </div>
@@ -87,8 +87,8 @@ function TechnicianRequestModal(props) {
                                                                 <Dropdown.Item eventKey={index} key={index}>
                                                                     <div className="d-flex" style={{ flexDirection: 'column' }}>
                                                                         <span style={{ fontSize: '18px', fontWeight: '600' }}>{address.firstName + ' ' + address.lastName}</span>
-                                                                        <span>{address.address} - {address.selectedCity}</span>
-                                                                        <span>{address.selectedState} - {address.pincode}</span>
+                                                                        <span>{address.address} - {address.city}</span>
+                                                                        <span>{address.state} - {address.pincode}</span>
                                                                         <span>LandMark: {address.landmark}</span>
                                                                         <span>Contact: {address.phoneNumber}</span>
                                                                     </div>

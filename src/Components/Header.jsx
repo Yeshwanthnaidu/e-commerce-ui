@@ -19,7 +19,7 @@ library.add(fas);
 import Logo from "../assets/logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { mainSliceActions } from "../Store/MainSlice.js";
-import { getAllProducts } from "../actions.js";
+import { getSearchInputData } from "../actions.js";
 
 import UserProfileModal from "./Auth/Modals/UserProfileModal.jsx";
 import TechnicianRequestModal from "./Modals/TechnicianRequestModal.jsx";
@@ -28,7 +28,7 @@ import TechnicianRequestModal from "./Modals/TechnicianRequestModal.jsx";
 function Header() {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [products, setProductData] = useState([]);
+  const [productsSearchData, setProductSearchData] = useState([]);
   const [showTechnicianRequestModal, setShowTechnicianRequestModal] = useState(false);
   const showSearchOptions = useSelector((state) => state.mainSlice.showSearchOptions);
 
@@ -40,7 +40,7 @@ function Header() {
 
   useEffect(() => {
     const getProductData = async () => {
-      setProductData(await getAllProducts())
+      setProductSearchData(await getSearchInputData())
     }
     getProductData();
   }, [])
@@ -89,10 +89,9 @@ function Header() {
     }
   }
 
-  const handleSearchFromDrodown = async (productData) => {
-    setSearchTerm(productData.product_name)
+  const handleSearchFromDrodown = async () => {
     dispatch(mainSliceActions.showSearchOptions(false))
-    navigate(`/search/${productData.product_name}`)
+    navigate(`/search/${searchTerm}`)
   }
 
 
@@ -177,26 +176,11 @@ function Header() {
                 onClick={(e) => { e.preventDefault(), setSearchTerm(''), navigate('/') }} >
                 X
               </button>
-              {products && products.length && searchTerm !== '' && showSearchOptions ?
+              {productsSearchData && productsSearchData.length && searchTerm !== '' && showSearchOptions ?
                 <div style={{ width: '40vw', position: 'absolute', top: '50px', zIndex: '10', background: 'white', borderBottomLeftRadius: '5px', borderBottomRightRadius: '5px' }}>
-                  {products.filter((product) => {
-                    const formattedTitle = product.product_name.toLowerCase().split(' ');
-                    const formattedQuery = searchTerm.toLowerCase().split(' ');
-                    const isPartialMatch = (formattedQuery.every(word => formattedTitle.includes(word)) ||
-                      formattedTitle.some(word => word.toLowerCase().includes(searchTerm.trim().split(' ').slice(-1)[0].toLowerCase()) && word.startsWith(searchTerm.trim().split(' ').slice(-1)[0].toLowerCase()[0])))
-
-                    const query = searchTerm.toLowerCase().replace(/\s/g, '').split('')
-                    const productCategory = product.product_type.toLowerCase().replace(/\s/g, '').split('')
-
-                    if (searchTerm.split(' ').slice(0, -1).length >= 1) {
-                      return (searchTerm.split(' ').slice(0, -1).every(word => formattedTitle.includes(word)) && isPartialMatch) || query.every(letter => productCategory.includes(letter))
-                    }
-
-
-                    return isPartialMatch || query.every(letter => productCategory.includes(letter))
-                  }).slice(0, 7).map(productData => {
+                  {productsSearchData.filter((product) => product.searchText.toLowerCase().includes(searchTerm.toLowerCase())).map(productData => {
                     return <div onClick={() => handleSearchFromDrodown(productData)}
-                      style={{ background: '#E5E5E5', color: 'black', width: '99%', float: 'left', margin: '3px', padding: '5px', cursor: 'pointer' }}>{productData.product_name.slice(0, 70) + `${productData.product_name.length > 70 ? '...' : ''}`}</div>
+                      style={{ background: '#E5E5E5', color: 'black', width: '99%', float: 'left', margin: '3px', padding: '5px', cursor: 'pointer' }}>{productData.productName.slice(0, 70) + `${productData.productName.length > 70 ? '...' : ''}`}</div>
                   })}
                 </div>
                 : null}
@@ -206,7 +190,7 @@ function Header() {
                 delay={{ hide: 100, show: 100 }}
                 placement="bottom"
                 overlay={renderTooltip}
-                >
+              >
                 <Button style={{ display: 'flex', gap: '10px', alignItems: 'center' }} variant="dark" onClick={() => setShowTechnicianRequestModal(true)}>
                   <FontAwesomeIcon icon={faScrewdriverWrench} />
                   Book a Technician

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { signupSubmit } from "../../actions";
-import { useDispatch } from "react-redux";
-import { mainSliceActions } from "../../Store/MainSlice";
+// import { useDispatch } from "react-redux";
+// import { mainSliceActions } from "../../Store/MainSlice";
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +13,7 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [confrimPassword, setConfrimPassword] = useState("");
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
 
   function generatePassword() {
@@ -61,7 +61,7 @@ function Signup() {
     if (password !== confrimPassword)
       return toast.error("Password & Confrim Password Not Matching");
     const userData = { name, username, email, password };
-    signupSubmit(userData, dispatch);
+    signupSubmit(userData, navigate);
   };
 
   return (

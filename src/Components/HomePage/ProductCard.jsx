@@ -1,11 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
-import ListGroup from 'react-bootstrap/ListGroup';
-
-import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import { getAllProducts, proxy, getImage } from '../../actions';
-import notFoundImage from '../../assets/notfound.jpg'
+import { getAllProducts } from '../../actions';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { mainSliceActions } from '../../Store/MainSlice';
@@ -34,15 +30,15 @@ const ProductCard = () => {
     }
 
     return (
-        <div style={{ margin: '10px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '15px' }}>
+        <div style={{ margin: '10px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '15px', cursor: 'pointer' }}>
             {productData?.length && productData.map(product => {
                 return (
                     <Card style={{ width: '18rem' }}>
                         <Carousel fade>
                             {product.images.map(imgUrl => {
                                 return (
-                                    <Carousel.Item onClick={() => { navigateToProduct(product._id) }}>
-                                        <Card.Img variant="top" src={getImage(imgUrl)}
+                                    <Carousel.Item onClick={() => { navigateToProduct(product.id) }}>
+                                        <Card.Img variant="top" src={imgUrl}
                                             style={{
                                                 width: '300px',
                                                 height: '200px',
@@ -54,9 +50,9 @@ const ProductCard = () => {
                                 )
                             })}
                         </Carousel>
-                        <Card.Body onClick={() => { navigateToProduct(product._id) }} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                            <div style={{marginBottom: '10px'}}>
-                                <Card.Title>{product.product_name}</Card.Title>
+                        <Card.Body onClick={() => { navigateToProduct(product.id) }} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                            <div style={{ marginBottom: '10px' }}>
+                                <Card.Title>{product.productName}</Card.Title>
                                 <Card.Text>{product.description}</Card.Text>
                             </div>
                             <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', }}>

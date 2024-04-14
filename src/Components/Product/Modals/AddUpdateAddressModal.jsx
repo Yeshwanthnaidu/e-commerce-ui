@@ -6,52 +6,53 @@ import { toast } from "react-toastify";
 import { addAddress, editAddress } from "../../../actions";
 
 function AddUpdateAddressModal(props) {
-
     const dispatch = useDispatch();
 
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
+
     const [isCityInvalid, setCityIsInvalid] = useState(false);
 
     const [firstName, setFirstName] = useState(props?.Address?.firstName ? props?.Address?.firstName : '');
     const [lastName, setLastName] = useState(props?.Address?.lastName ? props?.Address?.lastName : '');
     const [address, setAddress] = useState(props?.Address?.address ? props?.Address?.address : '');
     const [landmark, setLandmark] = useState(props?.Address?.landmark ? props?.Address?.landmark : '')
-    const [selectedState, setSelectedState] = useState(props?.Address?.selectedState ? props?.Address?.selectedState : '');
-    const [selectedCity, setSelectedCity] = useState(props?.Address?.selectedCity ? props?.Address?.selectedCity : '');
+    const [state, setState] = useState(props?.Address?.state ? props?.Address?.state : '');
+    const [city, setCity] = useState(props?.Address?.city ? props?.Address?.city : '');
     const [pincode, setPincode] = useState(props?.Address?.pincode ? props?.Address?.pincode : '');
     const [phoneNumber, setPhoneNumber] = useState(props?.Address?.phoneNumber ? props?.Address?.phoneNumber : '')
+
+    console.log("props ==>", props?.Address?.id);
 
     const userData = useSelector(state => state.mainSlice.userData)
 
     const handleSubmit = () => {
-        if ([null, undefined, ''].includes(firstName || lastName || address || landmark || selectedState || selectedCity || pincode || phoneNumber)) {
+        if ([null, undefined, ''].includes(firstName || lastName || address || landmark || state || city || pincode || phoneNumber)) {
             toast.error('Please Fill all the data')
         } else {
             const userAndAddressData = {
-                username: userData.username,
                 firstName,
                 lastName,
                 address,
                 landmark,
-                selectedState,
-                selectedCity,
+                state,
+                city,
                 pincode,
                 phoneNumber
             }
-            if (!props?.Address?._id) {
+            if (!props?.Address?.id) {
                 addAddress(userAndAddressData, props.setShowAddAddressModal, dispatch)
             } else {
-                editAddress({ addressId: props?.Address?._id, ...userAndAddressData }, props.setShowAddAddressModal, dispatch)
+                editAddress({ addressId: props?.Address?.id, ...userAndAddressData }, props.setShowAddAddressModal, dispatch)
             }
         }
     }
 
     useEffect(() => {
-        if (selectedState) {
+        if (state) {
             fetchCityData()
         }
-    }, [selectedState])
+    }, [state])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -89,7 +90,7 @@ function AddUpdateAddressModal(props) {
                 },
                 body: JSON.stringify({
                     country: 'India',
-                    state: selectedState || 'Telangana'
+                    state: state || 'Telangana'
                 }),
             });
 
@@ -106,7 +107,7 @@ function AddUpdateAddressModal(props) {
 
     // Function to validate city selection
     const cityValidator = () => {
-        if (selectedState == '') {
+        if (state == '') {
             setCityIsInvalid(true)
         }
     };
@@ -115,7 +116,7 @@ function AddUpdateAddressModal(props) {
         <>
             <Modal show={true}>
                 <Modal.Header>
-                    <Modal.Title>{props?.Address?._id ? 'Update' : "Add"} Address</Modal.Title>
+                    <Modal.Title>{props?.Address?.id ? 'Update' : "Add"} Address</Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ fontWeight: '600' }}>
                     <div className="d-grid" style={{ gap: '20px', gridTemplateColumns: '1fr 1fr', marginBottom: '20px', fontWeight: '600' }}>
@@ -139,10 +140,10 @@ function AddUpdateAddressModal(props) {
                     <div className="d-grid" style={{ gap: '20px', gridTemplateColumns: '1fr 1fr', marginBottom: '20px', fontWeight: '600' }}>
                         <Form.Group>
                             <Form.Label>State</Form.Label>
-                            <Form.Select size="sm" value={selectedState} onChange={(e) => {
-                                setSelectedState(e.target.value);
+                            <Form.Select size="sm" value={state} onChange={(e) => {
+                                setState(e.target.value);
                                 fetchCityData()
-                                setSelectedCity('')
+                                setCity('')
                                 setCityIsInvalid(false)
                             }}>
                                 <option value={''}>Select State</option>
@@ -153,7 +154,7 @@ function AddUpdateAddressModal(props) {
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>City</Form.Label>
-                            <Form.Select size="sm" value={selectedCity} onClick={() => { cityValidator() }} onChange={(e) => { setSelectedCity(e.target.value) }} isInvalid={isCityInvalid}>
+                            <Form.Select size="sm" value={city} onClick={() => { cityValidator() }} onChange={(e) => { setCity(e.target.value) }} isInvalid={isCityInvalid}>
                                 <option value={null}>Select City</option>
                                 {cities.map(city => {
                                     return <option value={city}>{city}</option>
@@ -180,7 +181,7 @@ function AddUpdateAddressModal(props) {
                         Cancel
                     </Button>
                     <Button variant="primary" onClick={handleSubmit}>
-                        {props?.Address?._id ? 'Update' : "Add"}
+                        {props?.Address?.id ? 'Update' : "Add"}
                     </Button>
                 </Modal.Footer>
             </Modal>

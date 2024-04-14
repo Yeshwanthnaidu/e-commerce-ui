@@ -5,7 +5,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getImage, proxy } from "../../actions";
+import { getProduct, proxy } from "../../actions";
 import notFoundImage from '../../assets/notfound.jpg';
 
 import { mainSliceActions } from "../../Store/MainSlice";
@@ -15,19 +15,47 @@ const EditProduct = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [productName, setProductName] = useState(props.props.product_name);
-    const [description, setDescription] = useState(props.props.description);
-    const [typeNR, setTypeNR] = useState(props.props.type_new_or_refurbished);
-    const [price, setPrice] = useState(props.props.price);
-    const [discount, setDiscount] = useState(props.props.discount);
-    // const [prevImages, setPrevImages] = useState([...props.props.images])
-    const [images, setImages] = useState([]); // props.props.images
-    const [productType, setProductType] = useState(props.props.product_type);
-    const [manufacturer, setManudacturer] = useState(props.props.manufacturer);
-    const [techSpecs, settechSpecs] = useState(JSON.parse(props.props.techSpecifications[0]));
-    const [stock, setStock] = useState(props.props.inventory_stock);
+    const [productName, setProductName] = useState();
+    const [description, setDescription] = useState();
+    const [typeNR, setTypeNR] = useState();
+    const [price, setPrice] = useState();
+    const [discount, setDiscount] = useState();
+    const [prevImages, setPrevImages] = useState([])
+    const [images, setImages] = useState([]);
+    const [productType, setProductType] = useState();
+    const [manufacturer, setManudacturer] = useState();
+    const [techSpecs, settechSpecs] = useState([]);
+    const [stock, setStock] = useState();
 
     const [showEditConfirmationModal, setShowEditConfirmationModal] = useState(false);
+
+    const getProductData = async () => {
+        try {
+            dispatch(mainSliceActions.showLoadingPage(true))
+            const product = await getProduct(props.id);
+            if (product?.id) {
+                const { productName, description, typeNewOrRefurbished, price, discount, images, productType, manufacturer, techSpecifications, inventoryStock } = product
+                setProductName(productName);
+                setDescription(description);
+                setTypeNR(typeNewOrRefurbished);
+                setPrice(price);
+                setDiscount(discount);
+                setPrevImages(images);
+                setProductType(productType);
+                setManudacturer(manufacturer);
+                settechSpecs(techSpecifications);
+                setStock(inventoryStock);
+            }
+        } catch (error) {
+            console.log('Error: ' + error)
+        } finally {
+            dispatch(mainSliceActions.showLoadingPage(false))
+        }
+    }
+
+    useEffect(() => {
+        getProductData();
+    }, [props.id])
 
     // function to handle adding a new key-value pair
     const handleAdd = () => {
@@ -228,9 +256,9 @@ const EditProduct = (props) => {
                     <div>
                         Previous Images (New Images Replace these Images if Added):
                         <div>
-                            {props.props.images.map((image, index) => {
+                            {prevImages.map((image, index) => {
                                 return (
-                                    <img src={getImage(image)} id={index} alt="Previous Image"
+                                    <img src={image} id={index} alt="Previous Image"
                                         width="150"
                                         style={{
                                             maxWidth: "100px",
@@ -352,7 +380,7 @@ const EditProduct = (props) => {
                 {showEditConfirmationModal && (
                     <EditConfirmationModal
                         props={{
-                            id: props.props._id,
+                            id: props.id,
                             productName,
                             description,
                             typeNR,
