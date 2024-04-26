@@ -30,20 +30,18 @@ const ProductCard = () => {
     }
 
     return (
-        <div style={{ margin: '10px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '15px', cursor: 'pointer' }}>
+        <div style={{ margin: '10px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '0.5rem', cursor: 'pointer' }}>
             {productData?.length && productData.map(product => {
                 return (
-                    <Card style={{ width: '18rem' }}>
+                    <Card style={{ margin: '0.5rem' }}>
                         <Carousel fade>
                             {product.images.map(imgUrl => {
                                 return (
-                                    <Carousel.Item onClick={() => { navigateToProduct(product.id) }}>
+                                    <Carousel.Item onClick={() => { navigateToProduct(product.id) }} interval={3000}>
                                         <Card.Img variant="top" src={imgUrl}
                                             style={{
-                                                width: '300px',
-                                                height: '200px',
-                                                maxWidth: "300px",
-                                                maxHeight: "200px",
+                                                width: '100%',
+                                                height: '15rem',
                                                 objectFit: "contain",
                                             }} />
                                     </Carousel.Item>
