@@ -5,6 +5,9 @@ import { signupSubmit } from "../../actions";
 // import { mainSliceActions } from "../../Store/MainSlice";
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { Form, Alert, Button } from "react-bootstrap";
+
+import './Auth.css'
 
 function Signup() {
   const [name, setName] = useState("");
@@ -12,6 +15,8 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confrimPassword, setConfrimPassword] = useState("");
+  const [show, setShow] = useState(false)
+  const [signUpBtnClicked, setSignUpBtnClicked] = useState(false);
 
   // const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -65,97 +70,98 @@ function Signup() {
   };
 
   return (
-    <div className="signup_form">
-      <div className="signup_form_Sub">
-        <h3>Register</h3>
-        <div className="mb-3">
-          <label>Name</label>
-          <input
-            type="name"
-            className="form-control"
-            placeholder="Enter Name"
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
+    <div
+      className="sign-in__wrapper"
+    >
+      {/* Overlay */}
+      <div className="sign-in__backdrop"></div>
+      {/* Form */}
+      <Form className="shadow p-4 bg-white rounded"
+        onSubmit={handleSubmit}
+      >
+        <div className="h4 mb-2 text-center">Sign Up</div>
+        {/* ALert */}
+        {show ? (
+          <Alert
+            className="mb-2"
+            variant="danger"
+            onClose={() => setShow(false)}
+            dismissible
+          >
+            Incorrect Details
+          </Alert>
+        ) : (
+          <div />
+        )}
+        <Form.Group className="mb-2" controlId="name">
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            type="text"
+            value={username}
+            placeholder="Name"
+            onChange={(e) => setName(e.target.value)}
+            required
           />
-        </div>
-        <div className="mb-3">
-          <label>Username</label>
-          <input
-            type="username"
-            className="form-control"
-            placeholder="Enter username"
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
+        </Form.Group>
+        <Form.Group className="mb-2" controlId="name">
+          <Form.Label>Username</Form.Label>
+          <Form.Control
+            type="text"
+            value={username}
+            placeholder="Username"
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
-        </div>
-        <div className="mb-3">
-          <label>Email address</label>
-          <input
-            type="email"
-            className="form-control"
-            placeholder="Enter email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
+        </Form.Group>
+        <Form.Group className="mb-2" controlId="email">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            type="text"
+            value={username}
+            placeholder="Email"
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
-        </div>
-        <div className="mb-3">
-          <label>Password</label>
-          <input
+        </Form.Group>
+        <Form.Group className="mb-2" controlId="password">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
             type="password"
-            className="form-control"
-            placeholder="Enter password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+            value={password}
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
-        </div>
-        <div className="mb-3">
-          <label>Confrim Password</label>
-          <input
+        </Form.Group>
+        <Form.Group className="mb-2" controlId="confirm-password">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
             type="password"
-            className="form-control"
-            placeholder="Confrim password"
-            onChange={(e) => {
-              setConfrimPassword(e.target.value);
-            }}
+            value={password}
+            placeholder="confrim Password"
+            onChange={(e) => setConfrimPassword(e.target.value)}
+            required
           />
-        </div>
-        <div className="d-flex" style={{ justifyContent: "space-between" }}>
-          <button
-            type="submit"
-            className="btn btn-primary"
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
-          <button
-            onClick={() => {
-              navigate("/", { replace: true });
-            }}
-            className="btn btn-primary"
-          >
-            close
-          </button>
-        </div>
-        <div
-          className="forgot-password text-right mt-3"
-          style={{ display: "flex", justifyContent: "space-between" }}
-        >
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              navigate("/login", { replace: true });
-            }}
-          >
+        </Form.Group>
+        <Button className="w-100" variant="dark" type="submit" disabled={signUpBtnClicked}>
+          {!signUpBtnClicked ? 'Sign In' : 'Signing In...'}
+        </Button>
+        <div className="d-flex justify-content-between">
+          <Button
+            className="text-muted px-0"
+            variant="link"
+            onClick={() => navigate("/", { replace: true })}>
+            Close
+          </Button>
+          <Button
+            className="text-muted px-0"
+            variant="link"
+            onClick={() => navigate("/login", { replace: true })}>
             Already Registered?
-          </button>
-          {/* <div id="signUpDiv"></div> */}
+          </Button>
         </div>
-      </div>
-    </div>
+      </Form >
+    </div >
   );
 }
 

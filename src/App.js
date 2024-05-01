@@ -23,14 +23,16 @@ import YourOrders from "./Components/Bookings/YourOrders.jsx";
 import CancelledorReturnOrders from "./Components/Bookings/CancelledorReturnOrders.jsx";
 import CheckoutAllPage from "./Components/Bookings/CheckoutAllPage.jsx";
 
-import SpinnerPage from './Components/Utils/SpinnerPage.jsx'
+import SpinnerPage from './Components/Utils/SpinnerPage.jsx';
+
+import './App.css'
 
 function App() {
   const loginStatus = useSelector(state => state.mainSlice.loginStatus)
   const showLoadingPage = useSelector(state => state.mainSlice.showLoadingPage)
 
   return (
-    <div>
+    <div className="app">
       <Header />
       {!!showLoadingPage && <SpinnerPage />}
       <Routes>

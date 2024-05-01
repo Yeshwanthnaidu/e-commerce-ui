@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { forgotPasswordSubmit } from "../../actions";
 import { useNavigate } from "react-router-dom";
+import { Form, Button } from 'react-bootstrap';
 
 function ForgotPassword() {
   const [username, setUsername] = useState("");
@@ -21,34 +22,30 @@ function ForgotPassword() {
   };
 
   return (
-    <div className="signup_form">
-      <div className="signup_form_Sub">
-        <h3>Forgot Password</h3>
-        <div className="mb-3">
-          <label>Username</label>
-          <input
-            type="username"
-            className="form-control"
-            placeholder="Enter username"
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
-          />
-        </div>
-        <div className="d-flex" style={{ justifyContent: "space-between" }}>
-          <button
-            type="submit"
-            className="btn btn-primary"
-            onClick={handleLogin}
-          >
-            Submit
-          </button>
-          <button onClick={closeBtnClicked} className="btn btn-primary">
-            close
-          </button>
-        </div>
+    <div className="sign-in__wrapper">
+      {/* Overlay */}
+      <div className="sign-in__backdrop"></div>
+      {/* Form */}
+      <Form className="shadow p-4 bg-white rounded">
+        <div className="h4 mb-2 text-center">Forgot Password</div>
         <div id="response_div"></div>
-      </div>
+        <Form.Group className="mb-2" controlId="username">
+          <Form.Label>Username</Form.Label>
+          <Form.Control
+            type="text"
+            value={username}
+            placeholder="username"
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </Form.Group>
+        <Button className="w-100" variant="dark" onClick={handleLogin}>
+          Send Email
+        </Button>
+        <Button className="w-100 my-1" variant="light" onClick={closeBtnClicked}>
+          close
+        </Button>
+      </Form>
     </div>
   );
 }

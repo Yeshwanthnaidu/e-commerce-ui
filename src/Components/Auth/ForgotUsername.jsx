@@ -3,9 +3,12 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { forgotUsernameSubmit } from "../../actions";
 import { useNavigate } from "react-router-dom";
+import { Form, Button } from 'react-bootstrap';
+import './Auth.css'
 
 function ForgotUsername() {
   const [email, setEmail] = useState("");
+  const [loginClicked, setLoginClicked] = useState(false)
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -15,41 +18,44 @@ function ForgotUsername() {
   };
 
   const handleLogin = async () => {
-    if (!email) return toast.error("Please Enter Email");
-    let response = await forgotUsernameSubmit(email);
-    document.getElementById("response_div")?.classList?.add("forgotSuccess");
-    document.getElementById("response_div").innerHTML = response.message;
+    try {
+      setLoginClicked(true)
+      if (!email) return toast.error("Please Enter Email");
+      let response = await forgotUsernameSubmit(email);
+      document.getElementById("response_div")?.classList?.add("forgotSuccess");
+      document.getElementById("response_div").innerHTML = response.message;
+    } catch {
+
+    } finally {
+      setLoginClicked(false)
+    }
   };
 
   return (
-    <div className="signup_form">
-      <div className="signup_form_Sub">
-        <h3>Forgot Usernmae</h3>
-        <div className="mb-3">
-          <label>Email</label>
-          <input
-            type="username"
-            className="form-control"
-            placeholder="Enter Email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-        </div>
-        <div className="d-flex" style={{ justifyContent: "space-between" }}>
-          <button
-            type="submit"
-            className="btn btn-primary"
-            onClick={handleLogin}
-          >
-            Submit
-          </button>
-          <button onClick={closeBtnClicked} className="btn btn-primary">
-            close
-          </button>
-        </div>
+    <div className="sign-in__wrapper">
+      {/* Overlay */}
+      <div className="sign-in__backdrop"></div>
+      {/* Form */}
+      <Form className="shadow p-4 bg-white rounded">
+        <div className="h4 mb-2 text-center">Forgot Username</div>
         <div id="response_div"></div>
-      </div>
+        <Form.Group className="mb-2" controlId="email">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            type="text"
+            value={email}
+            placeholder="Email"
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </Form.Group>
+        <Button className="w-100" variant="dark" onClick={handleLogin} disabled={loginClicked}>
+          {!loginClicked ? 'Find Username' : 'Finding Username'}
+        </Button>
+        <Button className="w-100 my-1" variant="light" onClick={closeBtnClicked}>
+          close
+        </Button>
+      </Form>
     </div>
   );
 }

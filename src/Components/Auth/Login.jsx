@@ -5,10 +5,14 @@ import { useDispatch } from "react-redux";
 import { mainSliceActions } from "../../Store/MainSlice";
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { Form, Alert, Button } from "react-bootstrap";
+
+import './Auth.css'
 
 function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginClicked, setLoginClicked] = useState(false)
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,79 +45,82 @@ function SignIn() {
     navigate("/");
   };
 
-  const handleLogin = () => {
-    if (!username || !password)
-      return toast.error("Please Enter Valid Username and Password");
-    const loginData = { username, password };
-    loginSubmit(loginData, navigate, dispatch);
+  const handleLogin = async () => {
+    try {
+      setLoginClicked(true)
+      if (!username || !password) setShow(true)
+      const loginData = { username, password };
+      await loginSubmit(loginData, navigate, dispatch);
+    } catch {
+
+    } finally {
+      setLoginClicked(false)
+    }
   };
 
   return (
-    <div className="signup_form">
-      <div className="signup_form_Sub">
-        <h3>Login</h3>
-        <div className="mb-3">
-          <label>Username</label>
-          <input
-            type="username"
-            className="form-control"
-            placeholder="Enter username"
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
+    <div className="sign-in__wrapper">
+      {/* Overlay */}
+      <div className="sign-in__backdrop"></div>
+      {/* Form */}
+      <Form className="shadow p-4 bg-white rounded">
+        <div className="h4 mb-2 text-center">Sign In</div>
+        <Form.Group className="mb-2" controlId="username">
+          <Form.Label>Username</Form.Label>
+          <Form.Control
+            type="text"
+            value={username}
+            placeholder="Username"
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
-        </div>
-        <div className="mb-3">
-          <label>Password</label>
-          <input
+        </Form.Group>
+        <Form.Group className="mb-2" controlId="password">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
             type="password"
-            className="form-control"
-            placeholder="Enter password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+            value={password}
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
-        </div>
-        <div className="d-flex" style={{ justifyContent: "space-between" }}>
-          <button
-            type="submit"
-            className="btn btn-primary"
-            onClick={handleLogin}
+        </Form.Group>
+        <Button className="w-100" variant="dark" onClick={handleLogin} disabled={loginClicked}>
+          {!loginClicked ? 'Log In' : 'Logging In...'}
+        </Button>
+        <div className="d-flex justify-content-between">
+          <Button
+            className="text-muted px-0"
+            variant="link"
+            onClick={() => navigate("/forgot-username")}
           >
-            Submit
-          </button>
-          <button onClick={closeBtnClicked} className="btn btn-primary">
-            close
-          </button>
-        </div>
-        <p
-          className="forgot-password text-right mt-3"
-          style={{ display: "flex", justifyContent: "space-between" }}
-        >
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              navigate("/forgot-password");
-            }}
+            Forgot Username?
+          </Button>
+          <Button
+            className="text-muted px-0"
+            variant="link"
+            onClick={() => navigate("/forgot-password")}
           >
             Forgot password?
-          </button>
-          <button className="btn btn-primary" onClick={clickedCreateNewAcc}>
-            Create new Account
-          </button>
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              navigate("/forgot-username");
-            }}
-          >
-            Forgot Username
-          </button>
-        </p>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          { /* <div id="signInDiv"></div> */}
+          </Button>
         </div>
-      </div>
+        <div className="d-flex justify-content-between">
+          <Button
+            className="text-muted px-0"
+            variant="link"
+            onClick={closeBtnClicked}
+          >
+            Close
+          </Button>
+          <Button
+            className="text-muted px-0"
+            variant="link"
+            onClick={clickedCreateNewAcc}
+          >
+            Sign Up
+          </Button>
+        </div>
+      </Form>
     </div>
   );
 }

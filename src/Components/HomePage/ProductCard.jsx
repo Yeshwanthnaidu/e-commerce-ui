@@ -5,11 +5,17 @@ import { getAllProducts } from '../../actions';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { mainSliceActions } from '../../Store/MainSlice';
+import { Row, Col } from 'react-bootstrap';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import noFillStar from '../../assets/star-no-fill.svg'
+import UserRatingStars from '../Utils/UserRatingStars';
 
 const ProductCard = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [productData, setProductData] = useState([]);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     useEffect(() => {
         const getProductData = async () => {
@@ -23,6 +29,19 @@ const ProductCard = () => {
             }
         }
         getProductData();
+
+        // Function to update windowWidth state with current window width
+        const updateWindowWidth = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        // Add event listener to resize event
+        window.addEventListener('resize', updateWindowWidth);
+
+        // Remove event listener on component unmount
+        return () => {
+            window.removeEventListener('resize', updateWindowWidth);
+        };
     }, [])
 
     const navigateToProduct = (id) => {
@@ -30,38 +49,88 @@ const ProductCard = () => {
     }
 
     return (
-        <div style={{ margin: '10px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '0.5rem', cursor: 'pointer' }}>
-            {productData?.length && productData.map(product => {
-                return (
-                    <Card style={{ margin: '0.5rem' }}>
-                        <Carousel fade>
-                            {product.images.map(imgUrl => {
-                                return (
-                                    <Carousel.Item onClick={() => { navigateToProduct(product.id) }} interval={3000}>
-                                        <Card.Img variant="top" src={imgUrl}
-                                            style={{
-                                                width: '100%',
-                                                height: '15rem',
-                                                objectFit: "contain",
-                                            }} />
-                                    </Carousel.Item>
-                                )
-                            })}
-                        </Carousel>
-                        <Card.Body onClick={() => { navigateToProduct(product.id) }} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                            <div style={{ marginBottom: '10px' }}>
-                                <Card.Title>{product.productName}</Card.Title>
-                                <Card.Text>{product.description}</Card.Text>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', }}>
-                                <Card.Text style={{ color: 'red', fontWeight: '1000' }}>Flat {product.discount}% Discount</Card.Text>
-                                <Card.Text style={{ fontWeight: '600' }}>Special Price: &#8377; {Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))} <s style={{ fontSize: '12px' }}>{product.price}</s></Card.Text>
-                            </div>
-                        </Card.Body>
-                    </Card>
-                )
-            })}
-        </div>
+        <>
+            < div className='d-flex justify-content-start text-start text-light w-100 p-1' > Latest on Placart</div >
+            {windowWidth < 992 ? <div className='d-flex align-items-center justify-content-center flex-column w-100'>
+                {productData?.length && productData.map(product => {
+                    return (
+                        <Card className='cursor-pointer d-grid my-1 flex-row' style={{ gridTemplateColumns: '1fr 1fr', gap: '0.25rem', width: '95%' }}>
+                            <Card.Header>
+                                <Carousel fade>
+                                    {product.images.map(imgUrl => {
+                                        return (
+                                            <Carousel.Item onClick={() => { navigateToProduct(product.id) }} interval={3000}>
+                                                <Card.Img src={imgUrl}
+                                                    style={{
+                                                        width: '10rem',
+                                                        height: '8rem',
+                                                        objectFit: "contain",
+                                                    }} />
+                                            </Carousel.Item>
+                                        )
+                                    })}
+                                </Carousel>
+                            </Card.Header>
+                            <Card.Body className="px-0" onClick={() => { navigateToProduct(product.id) }} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly' }}>
+                                <div style={{ marginBottom: windowWidth < 992 ? '' : '10px' }}>
+                                    <Card.Title className={`${windowWidth < 992 ? 'fs-6' : ''} mb-0`} style={{ fontWeight: '600' }}>{product.productName}</Card.Title>
+                                    <Card.Text className={`${windowWidth < 992 ? 'd-none' : ''} mb-0`}>{product.description}</Card.Text>
+                                </div>
+                                <div>
+                                    <div class="d-flex justify-content-start align-items-center">
+                                        {product?.userRating > 0 ? <UserRatingStars product={product} /> : <>No Reviews</>}
+                                    </div>
+                                    <div className='d-flex'>
+                                        <Card.Text className={`${windowWidth < 992 ? 'fs-6' : ''} mb-0 mr-1 fw-bold`} style={{ color: 'red' }}>-{product.discount}%</Card.Text>
+                                        <Card.Text className={'fs-6 fw-bold'}>&#8377; {Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))} <s style={{ fontSize: windowWidth > 992 ? '' : '12px' }}>{product.price}</s></Card.Text>
+                                    </div>
+                                </div>
+                            </Card.Body>
+                        </Card>
+                    )
+                })}
+            </div > : <div className='d-flex align-items-center justify-content-center flex-column w-100'>
+                <Row xs={12} className='w-100'>
+                    {productData?.length && productData.map(product => {
+                        return (
+                            <Col as={Card} xs={2} className='cursor-pointer m-2' style={{ gap: '0.25rem' }}>
+                                <Card.Header>
+                                    <Carousel fade>
+                                        {product.images.map(imgUrl => {
+                                            return (
+                                                <Carousel.Item onClick={() => { navigateToProduct(product.id) }} interval={3000} className=' d-flex justify-content-center'>
+                                                    <Card.Img src={imgUrl}
+                                                        style={{
+                                                            width: '10rem',
+                                                            height: '8rem',
+                                                            objectFit: "contain",
+                                                        }} />
+                                                </Carousel.Item>
+                                            )
+                                        })}
+                                    </Carousel>
+                                </Card.Header>
+                                <Card.Body className="px-0" onClick={() => { navigateToProduct(product.id) }} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly' }}>
+                                    <div style={{ marginBottom: windowWidth < 992 ? '' : '10px' }}>
+                                        <Card.Title className={`${windowWidth < 992 ? 'fs-6' : ''} mb-0`} style={{ fontWeight: '600' }}>{product.productName}</Card.Title>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex justify-content-start align-items-center">
+                                            {product?.userRating > 0 ?
+                                                <UserRatingStars product={product} />
+                                                : <>No Reviews</>
+                                            }
+                                        </div>
+                                        <Card.Text className={`${windowWidth < 992 ? 'fs-6' : 'fw-bold'} mb-0`} style={{ color: 'red' }}>Flat {product.discount}% Discount</Card.Text>
+                                        <Card.Text className={windowWidth < 992 ? 'fs-6' : 'fw-bold'}>SP: &#8377; {Number(product.price) - ((Number(product.price) / 100) * Number(product.discount))} <s style={{ fontSize: windowWidth > 992 ? '' : '12px' }}>{product.price}</s></Card.Text>
+                                    </div>
+                                </Card.Body>
+                            </Col>
+                        )
+                    })}
+                </Row>
+            </div>}
+        </>
     );
 }
 

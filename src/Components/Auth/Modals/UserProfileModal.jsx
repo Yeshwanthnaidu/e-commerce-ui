@@ -20,6 +20,7 @@ function UserProfileModal(props) {
   const [showChangePassword, setShowChangePassword] = useState(false)
   const [currentPassword, setCurrentPassWord] = useState('');
   const [newPassword, setNewPassword] = useState('')
+  const [confirmNewPassword, setConfrimNewPassword] = useState('');
 
   const [showAddAdressModal, setShowAddAddressModal] = useState(false);
   const [EditAddressData, setEditAddressData] = useState({})
@@ -32,6 +33,7 @@ function UserProfileModal(props) {
   }, [])
 
   const ChangeBtnClicked = () => {
+    if (newPassword !== confirmNewPassword) return alert('New Password and Confrim Password are not matching')
     const data = { currentPassword, newPassword }
     changePassword(data).then(res => res?.status === 'Success' ? setShowChangePassword(false) : null).catch((error) => { console.error(error) })
   };
@@ -48,36 +50,40 @@ function UserProfileModal(props) {
           <Modal.Title>Profile Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <Row className="p-1">
+            <Col>
+              Name:
+            </Col>
+            <Col xs={8}>
+              {userData.name}
+            </Col>
+          </Row>
+          <Row className="p-1">
+            <Col>
+              Username:
+            </Col>
+            <Col xs={8}>
+              {userData.username}
+            </Col>
+          </Row>
+          <Row className="p-1">
+            <Col>
+              Email:
+            </Col>
+            <Col xs={8}>
+              {userData.email}
+            </Col>
+          </Row>
+          <Row className="p-1">
+            <Col>
+              Address:
+            </Col>
+            <Col xs={8} className="d-flex justify-content-end">
+              <Button style={{ height: '25px', marginTop: '5px', display: 'flex', alignItems: 'center' }} onClick={() => { setShowAddAddressModal(true) }} variant="success">+</Button>
+            </Col>
+          </Row>
           <Form>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column sm="2">
-                Name:
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control plaintext readOnly defaultValue={userData.name} />
-              </Col>
-              <Form.Label column sm="2">
-                username:
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control plaintext readOnly defaultValue={userData.username} />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column sm="2">
-                Email:
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control plaintext readOnly defaultValue={userData.email} />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-              <div className="d-flex" style={{ gap: '40px' }}>
-                <Form.Label column sm="2">
-                  Address:
-                </Form.Label>
-                <Button style={{ height: '25px', marginTop: '5px', display: 'flex', alignItems: 'center' }} onClick={() => { setShowAddAddressModal(true) }} variant="success">+</Button>
-              </div>
+            {!showChangePassword && <Form.Group as={Row} className="mb-3">
               <div>
                 {userAddress.length ? userAddress.map((address) => {
                   return <>
@@ -99,7 +105,7 @@ function UserProfileModal(props) {
                   </>
                 }) : <>No Address Found</>}
               </div>
-            </Form.Group>
+            </Form.Group>}
             {showChangePassword && <>
               <Card>
                 <Card.Body style={{ display: 'grid', gridTemplateColumns: '10fr 1fr' }}>
@@ -118,6 +124,14 @@ function UserProfileModal(props) {
                       </Form.Label>
                       <Col sm="11">
                         <Form.Control type='password' onChange={(e) => { setNewPassword(e.target.value) }} />
+                      </Col>
+                    </Form.Group>
+                    <Form.Group as={Row} className="mb-3">
+                      <Form.Label column sm="5">
+                        Confrim New Password
+                      </Form.Label>
+                      <Col sm="11">
+                        <Form.Control type='password' onChange={(e) => { setConfrimNewPassword(e.target.value) }} />
                       </Col>
                     </Form.Group>
                     <Button variant="primary" onClick={ChangeBtnClicked}>

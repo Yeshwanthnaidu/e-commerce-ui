@@ -54,6 +54,7 @@ function Header() {
     // Remove event listener on component unmount
     return () => {
       window.removeEventListener('resize', updateWindowWidth);
+      closeOffCanvas()
     };
   }, [])
 
@@ -64,15 +65,26 @@ function Header() {
     }, 5000)
   }
 
+  //mobile functionality
+  const closeOffCanvas = () => {
+    if (windowWidth < 992) {
+      const closeBtn = document.querySelector('.offcanvas-header')?.children;
+      if (closeBtn?.length >= 1) closeBtn[1].click()
+    }
+  }
+
   const loginBtnClicked = () => {
+    closeOffCanvas();
     navigate("/login", { replace: true });
   };
 
   const registerBtnClicked = () => {
+    closeOffCanvas()
     navigate("/sign-up", { replace: true });
   };
 
   const logoutBtnClicked = () => {
+    closeOffCanvas()
     dispatch(mainSliceActions.logoutUser());
     toast.success("Logout Successful");
     setTimeout(() => {
@@ -81,6 +93,7 @@ function Header() {
   };
 
   const myAdsBtnCLicked = () => {
+    closeOffCanvas()
     if (loginStatus) {
       navigate("/my_ads");
     } else {
@@ -89,6 +102,7 @@ function Header() {
   };
 
   const profileBtnClicked = () => {
+    closeOffCanvas()
     if (loginStatus) {
       setShowUserProfile(true)
     } else {
@@ -97,6 +111,7 @@ function Header() {
   }
 
   const showCartBtnClicked = () => {
+    closeOffCanvas()
     if (loginStatus) {
       navigate('/show_cart')
     } else {
@@ -105,6 +120,7 @@ function Header() {
   }
 
   const handleSearchFromDrodown = async () => {
+    closeOffCanvas()
     dispatch(mainSliceActions.showSearchOptions(false))
     navigate(`/search/${searchTerm}`)
   }
@@ -127,7 +143,7 @@ function Header() {
     </p>
   </div>
 
-  const searchForm = () => <Form className="d-flex fs-6 mx-2" style={{ position: "relative", width: windowWidth > 992 && '50vw' }}>
+  const searchForm = () => <Form className="d-flex fs-6 mx-2" style={{ position: "relative", width: windowWidth > 992 && '50vw', padding: windowWidth < 992 && '0.5rem 0rem' }}>
     <Form.Control
       style={{ width: "100%", borderRadius: '0px', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px' }}
       value={searchTerm.slice(0, 70)}
@@ -158,7 +174,7 @@ function Header() {
       <FontAwesomeIcon icon="fa-solid fa-xmark" />
     </button>
     {productsSearchData && productsSearchData.length && searchTerm !== '' && showSearchOptions ?
-      <div style={{ width: 'auto', position: 'absolute', top: '40px', zIndex: '10', background: 'white', borderBottomLeftRadius: '5px', borderBottomRightRadius: '5px' }}>
+      <div style={{ width: '99%', position: 'absolute', top: '40px', zIndex: '10', background: 'white', borderBottomLeftRadius: '5px', borderBottomRightRadius: '5px' }}>
         {productsSearchData.filter((product) => product.searchText.toLowerCase().includes(searchTerm.toLowerCase())).map(productData => {
           return <div onClick={() => handleSearchFromDrodown(productData)}
             style={{ background: '#E5E5E5', color: 'black', width: '99%', float: 'left', margin: '3px', padding: '5px', cursor: 'pointer' }}>{productData.productName.slice(0, 70) + `${productData.productName.length > 70 ? '...' : ''}`}</div>
@@ -180,6 +196,11 @@ function Header() {
         </Button>
       </OverlayTrigger>
     </div>
+  }
+
+  const handleShowBookATechieModal = () => {
+    setShowTechnicianRequestModal(true);
+    closeOffCanvas()
   }
 
   return (
@@ -217,19 +238,19 @@ function Header() {
                           <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" style={{ color: "red" }} />
                         </div>
                       </div>
-                      <div className="nav-bar-item" onClick={() => navigate('/sell_your_product', { replace: true })}><FontAwesomeIcon icon={faMoneyBillTrendUp} className="px-3" />Sell your Product</div>
+                      <div className="nav-bar-item" onClick={() => { closeOffCanvas(), navigate('/sell_your_product', { replace: true }) }}><FontAwesomeIcon icon={faMoneyBillTrendUp} className="px-3" />Sell your Product</div>
                       <div className="nav-bar-item" onClick={myAdsBtnCLicked}><FontAwesomeIcon icon="fas fa-ad" className="px-3" />My Ads</div>
-                      <div className="nav-bar-item" onClick={() => navigate('/your_orders')}><FontAwesomeIcon icon="fa-solid fa-box-open" className="px-3" />Your Orders</div>
+                      <div className="nav-bar-item" onClick={() => { closeOffCanvas(), navigate('/your_orders') }}><FontAwesomeIcon icon="fa-solid fa-box-open" className="px-3" />Your Orders</div>
                       <div className="nav-bar-item" onClick={showCartBtnClicked}><FontAwesomeIcon icon="fa-solid fa-cart-shopping" className="px-3" />Shopping Cart</div>
-                      <div className="nav-bar-item" onClick={() => { navigate('/show_wishlist') }}><FontAwesomeIcon icon="fa-solid fa-pen-to-square" className="px-3" />Wish List</div>
-                      <div className="nav-bar-item" onClick={() => { navigate('/cancelled_returned') }}><FontAwesomeIcon icon="fa-solid fa-ban" className="px-3 text-danger" />Cancel/Return</div>
+                      <div className="nav-bar-item" onClick={() => { closeOffCanvas(), navigate('/show_wishlist') }}><FontAwesomeIcon icon="fa-solid fa-pen-to-square" className="px-3" />Wish List</div>
+                      <div className="nav-bar-item" onClick={() => { closeOffCanvas(), navigate('/cancelled_returned') }}><FontAwesomeIcon icon="fa-solid fa-ban" className="px-3 text-danger" />Cancel/Return</div>
                       <div className="nav-bar-item" onClick={profileBtnClicked}><FontAwesomeIcon icon="fa-solid fa-gear" className="px-3" />Settings</div>
                     </> : <>
                       <div className="nav-bar-item" onClick={loginBtnClicked}><FontAwesomeIcon icon="fa-solid fa-right-to-bracket" className="px-3" />Login</div>
                       <div className="nav-bar-item" onClick={registerBtnClicked}><FontAwesomeIcon icon="fa-solid fa-user-plus" className="px-3" />Register</div>
                     </>}
                     <div className="nav-bar-item">
-                      <span onClick={() => loginStatus ? setShowTechnicianRequestModal(true) : alert('Please Login')}>
+                      <span onClick={() => loginStatus ? handleShowBookATechieModal() : alert('Please Login')}>
                         <FontAwesomeIcon icon={faScrewdriverWrench} className="px-3" />Book a Technician
                       </span>
                       <div style={{ position: 'relative' }}>
