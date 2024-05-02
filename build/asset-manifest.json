@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/static/css/main.f0bef4d5.css",
+    "main.js": "/static/js/main.8e7f2e0a.js",
+    "static/media/mw-a.png": "/static/media/mw-a.361d153a8f5c76cd327c.png",
+    "static/media/mb-c.jpg": "/static/media/mb-c.76090f35efd3636cdf05.jpg",
+    "static/media/mw-b.jpg": "/static/media/mw-b.c858b7460c36e34b9f01.jpg",
+    "static/media/deals2.jpg": "/static/media/deals2.3e7e9142a8cc72d8257e.jpg",
+    "static/media/login-gradient.jpg": "/static/media/login-gradient.6b1d77439e544191bcfa.jpg",
+    "static/media/deals3.jpg": "/static/media/deals3.2aa83a5006015fa51f3b.jpg",
+    "static/media/oopsPageNotFound.jpg": "/static/media/oopsPageNotFound.061056519d19ef5a3942.jpg",
+    "static/media/deals1.jpg": "/static/media/deals1.e23939a3ce89b90a1439.jpg",
+    "static/media/notfound.jpg": "/static/media/notfound.9beda7c685d50ca0a2bb.jpg",
+    "static/media/errorFound.png": "/static/media/errorFound.33eb608a73913e4ab5c9.png",
+    "static/media/logo.png": "/static/media/logo.55e2b078c9bb00b858b1.png",
+    "index.html": "/index.html",
+    "static/media/star-no-fill.svg": "/static/media/star-no-fill.6e5944ed065522c5cb5770287b9c085c.svg",
+    "static/media/check_solid.svg": "/static/media/check_solid.40a6964ff67fa0df4bdbdb418a0fe96e.svg",
+    "main.f0bef4d5.css.map": "/static/css/main.f0bef4d5.css.map",
+    "main.8e7f2e0a.js.map": "/static/js/main.8e7f2e0a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f0bef4d5.css",
+    "static/js/main.8e7f2e0a.js"
+  ]
+}
