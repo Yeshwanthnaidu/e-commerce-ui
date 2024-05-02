@@ -5,7 +5,7 @@ import { editProduct } from '../../../actions'
 import { useNavigate } from "react-router-dom";
 
 function EditConfirmationModal(props) {
-    const navigate= useNavigate()
+    const navigate = useNavigate()
 
     const updateAd = () => {
         editProduct(props.props, props.setShowEditConfirmationModal, props.setShowEditProduct, navigate)
@@ -17,12 +17,13 @@ function EditConfirmationModal(props) {
                 <Modal.Header>
                     <Modal.Title>Confrim Details</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{ padding: '0rem 0.5rem' }}>
                     <div
+                        className="w-100"
                         style={{
                             display: "grid",
-                            gridTemplateColumns: "1.3fr 2fr",
-                            gap: "30px",
+                            gridTemplateColumns: "1.8fr 3fr",
+                            gap: "10px",
                         }}
                     >
                         <div style={{ fontWeight: '600' }}>Product Name : </div>
@@ -33,7 +34,7 @@ function EditConfirmationModal(props) {
                         <div>{props.props.typeNR}</div>
                         <div style={{ fontWeight: '600' }}>Product Type :</div>
                         <div>{props.props.productType}</div>
-                        <div style={{ fontWeight: '600' }}>Manufacturer/Brand :</div>
+                        <div style={{ fontWeight: '600' }}>Manufacturer :</div>
                         <div>{props.props.manufacturer}</div>
                         <div style={{ fontWeight: '600' }}>Inventory Stock:</div>
                         <div>{props.props.stock}</div>
@@ -42,7 +43,7 @@ function EditConfirmationModal(props) {
                         <div style={{ fontWeight: '600' }}>Discount:</div>
                         <div> {props.props.discount}</div>
                         <div style={{ fontWeight: '600' }}>Technical Specifications:</div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 2fr', gap: '10px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 3fr', gap: '10px' }}>
                             {props.props.techSpecs.map(spec => {
                                 return <>
                                     <div style={{ wordWrap: 'break-word', fontWeight: '600' }}>{spec.key} :</div>
@@ -57,7 +58,10 @@ function EditConfirmationModal(props) {
                                     <img
                                         src={URL.createObjectURL(image)}
                                         alt="Product Image"
-                                        width="250"
+                                        width="190"
+                                        height="190"
+                                        className="m-1 p-1"
+                                        style={{ borderRadius: '1rem', border: '1px solid grey', objectFit: 'contain' }}
                                     />
                                 </div>
                             }) : <div>Images Not Updated</div>}
@@ -73,7 +77,7 @@ function EditConfirmationModal(props) {
                     >
                         Back to Edit
                     </Button>
-                    <Button variant="primary" onClick={updateAd}>
+                    <Button variant="dark" onClick={updateAd}>
                         Update
                     </Button>
                 </Modal.Footer>

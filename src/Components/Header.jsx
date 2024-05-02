@@ -143,7 +143,7 @@ function Header() {
     </p>
   </div>
 
-  const searchForm = () => <Form className="d-flex fs-6 mx-2" style={{ position: "relative", width: windowWidth > 992 && '50vw', padding: windowWidth < 992 && '0.5rem 0rem' }}>
+  const searchForm = () => <Form className="d-flex fs-6 mx-2" style={{ position: "relative", width: windowWidth > 992 && '60%', padding: windowWidth < 992 && '0.5rem 0rem' }}>
     <Form.Control
       style={{ width: "100%", borderRadius: '0px', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px' }}
       value={searchTerm.slice(0, 70)}

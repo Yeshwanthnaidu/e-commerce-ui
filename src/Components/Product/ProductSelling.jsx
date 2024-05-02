@@ -11,7 +11,7 @@ import ConfirmationModal from "./Modals/ConfirmationModal";
 
 import './Product.css'
 
-const ProductSellingPage = () => {
+const ProductSellingPage = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -215,7 +215,7 @@ const ProductSellingPage = () => {
                         }}
                       />
                       <div style={{ height: '100%', background: 'red', borderRadius: '1rem' }}>
-                        <button className="text-light" onClick={() => handleRemoveImage(index)}>
+                        <button className="text-light" onClick={(e) => { e.preventDefault(); handleRemoveImage(index) }}>
                           X
                         </button>
                       </div>

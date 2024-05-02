@@ -90,10 +90,10 @@ const ProductCard = () => {
                     )
                 })}
             </div > : <div className='d-flex align-items-center justify-content-center flex-column w-100'>
-                <Row xs={12} className='w-100'>
+                <Row md={12} className='w-100 m-2 mx-4'>
                     {productData?.length && productData.map(product => {
                         return (
-                            <Col as={Card} xs={2} className='cursor-pointer m-2' style={{ gap: '0.25rem' }}>
+                            <Col md={2} as={Card} className='cursor-pointer m-2' style={{ width: '16.4rem', gap: '0.25rem' }}>
                                 <Card.Header>
                                     <Carousel fade>
                                         {product.images.map(imgUrl => {
@@ -101,8 +101,8 @@ const ProductCard = () => {
                                                 <Carousel.Item onClick={() => { navigateToProduct(product.id) }} interval={3000} className=' d-flex justify-content-center'>
                                                     <Card.Img src={imgUrl}
                                                         style={{
-                                                            width: '10rem',
-                                                            height: '8rem',
+                                                            width: '12rem',
+                                                            height: '10rem',
                                                             objectFit: "contain",
                                                         }} />
                                                 </Carousel.Item>
@@ -135,3 +135,4 @@ const ProductCard = () => {
 }
 
 export default ProductCard
+
