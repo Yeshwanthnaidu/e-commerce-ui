@@ -20,7 +20,7 @@ apiCaller.interceptors.request.use((config) => {
 apiCaller.interceptors.response.use(
     (response) => {
         const { status, message } = response.data;
-        toast.success(message || status || 'Request Successfull');
+        // toast.success(message || status || 'Request Successfull');
         return response.data
     },
     (error) => {

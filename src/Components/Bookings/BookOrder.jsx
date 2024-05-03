@@ -210,7 +210,7 @@ const BookOrder = () => {
                                     <div style={{ fontWeight: '600', fontSize: '20px', paddingBottom: '10px' }}>
                                         Address:
                                     </div>
-                                    {selectedAddress?.firstName ?
+                                    {selectedAddress?.id ?
                                         <div className="d-flex" style={{ flexDirection: 'column', paddingBottom: '10px' }}>
                                             <span style={{ fontSize: '18px', fontWeight: '600' }}>{selectedAddress.firstName + ' ' + selectedAddress.lastName}</span>
                                             <span>{selectedAddress.address} - {selectedAddress.city}</span>
@@ -357,7 +357,7 @@ const BookOrder = () => {
                                     <div style={{ fontWeight: '600', fontSize: '20px', paddingBottom: '10px' }}>
                                         Address:
                                     </div>
-                                    {selectedAddress?.firstName ?
+                                    {selectedAddress?.id ?
                                         <div className="d-flex" style={{ flexDirection: 'column', paddingBottom: '10px' }}>
                                             <span style={{ fontSize: '18px', fontWeight: '600' }}>{selectedAddress.firstName + ' ' + selectedAddress.lastName}</span>
                                             <span>{selectedAddress.address} - {selectedAddress.city}</span>
