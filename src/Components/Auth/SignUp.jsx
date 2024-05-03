@@ -97,7 +97,7 @@ function Signup() {
           <Form.Label>Name</Form.Label>
           <Form.Control
             type="text"
-            value={username}
+            value={name}
             placeholder="Name"
             onChange={(e) => setName(e.target.value)}
             required
@@ -117,7 +117,7 @@ function Signup() {
           <Form.Label>Email</Form.Label>
           <Form.Control
             type="text"
-            value={username}
+            value={email}
             placeholder="Email"
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -137,7 +137,7 @@ function Signup() {
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
-            value={password}
+            value={confrimPassword}
             placeholder="confrim Password"
             onChange={(e) => setConfrimPassword(e.target.value)}
             required
