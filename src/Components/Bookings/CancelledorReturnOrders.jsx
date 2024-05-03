@@ -26,10 +26,10 @@ const CancelledorReturnOrders = () => {
     }, [])
 
     return (<>
-        <div style={{ minHeight: '88.1vh', backgroundColor: '#E5E5E5', display: 'flex', flexDirection: 'column', gap: '30px', padding: '10px' }}>
+        <div style={{ minHeight: '88.1vh', backgroundColor: '#E5E5E5', display: 'flex', flexDirection: 'column', gap: '10px', padding: '10px' }}>
             {orders?.length ?
                 <div>
-                    <div style={{ fontSize: '30px', fontWeight: '600' }}>Your Cancelled or Returned Orders:</div>
+                    <div style={{ fontSize: '20px', fontWeight: '600' }}>Your Cancelled or Returned Orders:</div>
                 </div> : null}
             {orders?.length ?
                 orders.reverse().map((orderData, index) => {
