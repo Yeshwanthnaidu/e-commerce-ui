@@ -170,7 +170,8 @@ function Header() {
       border: 'none',
       width: '33px'
     }}
-      onClick={(e) => { e.preventDefault(), setSearchTerm(''), navigate('/'), setShowSearchFeild(false) }} >
+      className="d-flex justify-content-center align-items-center"
+      onClick={(e) => { e.preventDefault(), setSearchTerm(''), setShowSearchFeild(false) }} >
       <FontAwesomeIcon icon="fa-solid fa-xmark" />
     </button>
     {productsSearchData && productsSearchData.length && searchTerm !== '' && showSearchOptions ?
