@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-export const proxy = process.env.NODE_ENV === 'development' ? `http://localhost:8000/api/v1` : `${process.env.REACT_APP_PROXY}/api/v1`;
+export const proxy = process.env.NODE_ENV === 'development' ? `http://192.168.29.182:8000/api/v1` : `${process.env.REACT_APP_PROXY}/api/v1`;
 
 const apiCaller = axios.create({
     baseURL: proxy,
