@@ -57,11 +57,6 @@ const ViewOrder = (props) => {
                                 <span>{orderData?.productName}</span>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '5fr 1fr 10fr' }}>
-                                <span>Description</span>
-                                <span>:</span>
-                                <span>{orderData?.description}</span>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '5fr 1fr 10fr' }}>
                                 <span>Coupon Code</span>
                                 <span>:</span>
                                 <span>{orderData?.couponCode}</span>
@@ -75,6 +70,16 @@ const ViewOrder = (props) => {
                                 <span>Final Amount</span>
                                 <span>:</span>
                                 <span>{orderData?.finalPrice}</span>
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '5fr 1fr 10fr' }}>
+                                <span>Payment Mode</span>
+                                <span>:</span>
+                                <span>{orderData?.paymentMode}</span>
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '5fr 1fr 10fr' }}>
+                                <span>Payment Id</span>
+                                <span>:</span>
+                                <span>{orderData?.paymentId || 'N/A'}</span>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '5fr 1fr 10fr' }}>
                                 <span>Shipping Address:</span>
@@ -122,7 +127,7 @@ const ViewOrder = (props) => {
                     <div style={{ display: 'flex', justifyContent: "center" }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '40%' }}>
                             <Button variant="warning" onClick={() => { handleDownloadReceipt(orderData.id) }}>Download Receipt</Button>
-                            {!orderData.cancelled || moment() >= moment(orderData?.orderedOn).add(2, 'days') ? <Button variant="danger" onClick={() => { cancelOrder({ username: userData.username, orderId: orderData.id }) }}>Cancel</Button> : null}
+                            {(!orderData.cancelled && moment() <= moment(orderData?.orderedOn).add(2, 'days')) ? <Button variant="danger" onClick={() => { cancelOrder({ username: userData.username, orderId: orderData.id }) }}>Cancel</Button> : null}
                             <Button variant="dark" onClick={() => { window.open(`https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=${orderData.sellerContact}`, '_blank') }}>Contact Seller</Button>
                         </div>
                     </div>
@@ -195,6 +200,16 @@ const ViewOrder = (props) => {
                         <span>Final Amount</span>
                         <span>:</span>
                         <span>{orderData?.finalPrice}</span>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '5fr 1fr 10fr' }}>
+                        <span>Payment Mode</span>
+                        <span>:</span>
+                        <span>{orderData?.paymentMode}</span>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '5fr 1fr 10fr' }}>
+                        <span>Payment Id</span>
+                        <span>:</span>
+                        <span>{orderData?.paymentId || 'N/A'}</span>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '5fr 1fr 10fr' }}>
                         <span>Shipping Address:</span>

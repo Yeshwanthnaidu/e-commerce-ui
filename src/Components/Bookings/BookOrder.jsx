@@ -14,6 +14,8 @@ import { toast } from "react-toastify";
 import { mainSliceActions } from "../../Store/MainSlice";
 import UserRatingStars from "../Utils/UserRatingStars";
 
+const paymentModes = ['Cash On Delivery', 'Credit/Debit Card']
+
 const BookOrder = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -30,7 +32,8 @@ const BookOrder = () => {
     const [couponCode, setCouponCode] = useState(null)
     const [couponDiscount, setCouponDiscount] = useState(0);
     const [couponInvalid, setCouponInvalid] = useState(false)
-    const [couponMessage, setCouponMessage] = useState('')
+    const [couponMessage, setCouponMessage] = useState('');
+    const [PaymentType, setPaymentType] = useState(paymentModes[0])
 
     const { id } = useParams();
 
@@ -79,7 +82,7 @@ const BookOrder = () => {
             productId: productData.id,
             shippingAddressId: selectedAddress.id,
             couponCode: couponCode || '',
-            paymentMode: 'Cash On Delivery',
+            paymentMode: PaymentType,
             buyingQuantity: buyingQuantity,
         };
         dispatch(mainSliceActions.showLoadingPage(true))
@@ -191,14 +194,25 @@ const BookOrder = () => {
                                                     Apply Coupon
                                                 </Button>
                                             </div>
+                                            <hr></hr>
                                             <div style={{ fontWeight: '600', fontSize: '20px', paddingBottom: '20px' }}>
                                                 <u>Payment Type:</u>
                                             </div>
-                                            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px' }}>
-                                                <Form.Check.Input type='radio' isValid defaultChecked style={{ marginBottom: '3px' }} />
-                                                <Form.Check.Label style={{ fontWeight: '600', fontSize: '20px', }}>Cash on Delivery</Form.Check.Label>
+                                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                <Dropdown value={PaymentType} onSelect={(e) => { setPaymentType(e) }} className="w-100">
+                                                    <Dropdown.Toggle style={{ backgroundColor: 'white', color: 'black' }} className="w-100">
+                                                        {'   ' + PaymentType + "   "}
+                                                    </Dropdown.Toggle>
+                                                    <Dropdown.Menu className="w-100 text-center">
+                                                        {paymentModes.map((val, index) => {
+                                                            return <Dropdown.Item eventKey={paymentModes[index]} key={index}>
+                                                                {paymentModes[index]}
+                                                            </Dropdown.Item>
+                                                        })}
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
                                             </div>
-                                            <Button style={{ backgroundColor: 'gold', color: 'black', width: '30vh', marginTop: '20px' }} onClick={handlePlaceOrder}>
+                                            <Button className="w-100" style={{ backgroundColor: 'gold', color: 'black', marginTop: '20px' }} onClick={handlePlaceOrder}>
                                                 Place Order
                                             </Button>
                                         </div>
@@ -342,13 +356,23 @@ const BookOrder = () => {
                                 </div>
                             </div>
                             <hr></hr>
-                            <div className="d-flex align-items-center" style={{ gap: '3rem' }}>
+                            <div className="d-flex flex-column" style={{ gap: '1rem' }}>
                                 <div style={{ fontWeight: '600', fontSize: '18px' }}>
                                     Payment Type:
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <Form.Check.Input type='radio' isValid defaultChecked />
-                                    <Form.Check.Label style={{ fontWeight: '600', fontSize: '16px', }}>Cash on Delivery</Form.Check.Label>
+                                <div>
+                                    <Dropdown value={PaymentType} onSelect={(e) => { setPaymentType(e) }} className="w-100">
+                                        <Dropdown.Toggle style={{ backgroundColor: 'white', color: 'black' }} className="w-100">
+                                            {'   ' + PaymentType + "   "}
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu className="w-100 text-center">
+                                            {paymentModes.map((val, index) => {
+                                                return <Dropdown.Item eventKey={paymentModes[index]} key={index}>
+                                                    {paymentModes[index]}
+                                                </Dropdown.Item>
+                                            })}
+                                        </Dropdown.Menu>
+                                    </Dropdown>
                                 </div>
                             </div>
                             <hr></hr>
